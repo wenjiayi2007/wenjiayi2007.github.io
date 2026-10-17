@@ -103,7 +103,6 @@
       top: 16px;
       left: 16px;
       z-index: 4;
-      /* 模糊层是5 越大越上层*/
       cursor: pointer;
       user-select: none;
       width: 56px;
@@ -119,12 +118,9 @@
       animation: recordRotate 6s linear infinite;
       animation-play-state: paused;
       overflow: hidden;
-      /* 裁剪伪元素，保持圆形 */
       background: transparent;
-      /* 父容器清空背景，渐变放到伪元素 */
     }
 
-    /* 唱片盘面渐变，跟着一起旋转 */
     .record::before {
       content: "";
       position: absolute;
@@ -132,7 +128,6 @@
       background: linear-gradient(135deg, #3a3434, #000000);
     }
 
-    /* 唱片中心彩色标签圈 */
     .record::after {
       content: "";
       position: absolute;
@@ -150,16 +145,10 @@
     }
 
     @keyframes recordRotate {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    /* ==========新增悬浮提示文字 无框无背景========== */
     .record-player .tip-text {
       position: absolute;
       left: 64px;
@@ -178,6 +167,7 @@
       opacity: 1;
     }
 
+    /* 底部社交按钮 */
     .footer-group {
       position: absolute;
       top: 580px;
@@ -185,6 +175,7 @@
       transform: translateX(-50%);
       display: flex;
       gap: 15px;
+      z-index: 25;
     }
 
     .social-btn {
@@ -214,19 +205,7 @@
       margin-right: 8px;
     }
 
-    .social-btn::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 2px solid #ffffff;
-      border-radius: 999px;
-      transition: 0.25s ease;
-      opacity: 0;
-    }
-
+    .social-btn::before,
     .social-btn::after {
       content: "";
       position: absolute;
@@ -240,608 +219,753 @@
       opacity: 0;
     }
 
-    .social-btn:hover {
-      transform: translate(4px, -3px);
+    .social-btn:hover { transform: translate(4px, -3px); }
+    .social-btn:hover::before { opacity: 0.6; transform: translate(-3px, 1.5px); }
+    .social-btn:hover::after { opacity: 0.25; transform: translate(-4px, 5px); }
+
+    /* ============================================================
+       ★★★ 右侧入口与概览面板 UI ★★★
+       ============================================================ */
+    #enter-overview-btn {
+      white-space: nowrap;
+      position: fixed;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      color: #f71e75;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 22px;
+      letter-spacing: 3px;
+      cursor: pointer;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      writing-mode: vertical-lr;
+      opacity: 0.9;
+      user-select: none;
     }
 
-    .social-btn:hover::before {
-      opacity: 0.6;
-      transform: translate(-3px, 1.5px);
+    #enter-overview-btn:hover {
+      opacity: 1;
+      transform: translateY(-50%) translateX(-5px);
     }
 
-    .social-btn:hover::after {
-      opacity: 0.25;
-      transform: translate(-4px, 5px);
+    /* 右侧概览面板 */
+    #overview-panel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 530px;
+      height: 100%;
+      z-index: 20;
+      background: linear-gradient(to left, rgba(20, 22, 30, 0.5) 0%, rgba(20, 22, 30, 0) 100%);
+      display: flex;
+      flex-direction: column;
+      padding: 30px 60px;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+      transform: translateX(100%);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: auto;
+    }
+
+    body.in-overview #overview-panel {
+      transform: translateX(0);
+    }
+
+    .overview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ffffff;
+      font-size: 20px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 15px;
+    }
+
+    #close-overview-btn {
+      font-size: 14px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+
+    #close-overview-btn:hover { opacity: 1; }
+
+    /* 滚动区域 */
+    .timeline-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+      padding-top: 22px;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
+    }
+
+        /* 显示并自定义滚动条 */
+    .timeline-scroll::-webkit-scrollbar {
+      display: block;
+      width: 3px; /* 滚动条的宽度 */
+    }
+    .timeline-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3); /* 滚动条的半透明颜色 */
+      border-radius: 4px; /* 圆角 */
+    }
+    .timeline-scroll::-webkit-scrollbar-track {
+      background: transparent; /* 滚动条轨道的背景透明 */
+    }
+    /* 兼容 Firefox */
+    .timeline-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 20px;
+      padding-bottom: 50px;
+      border-left: 1px solid rgba(255, 255, 255, 0.15);
+      margin-left: 10px;
+    }
+
+    .timeline-item:last-child { border-left-color: transparent; }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 4px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    .timeline-date {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-family: ui-monospace, monospace;
+      margin-bottom: 8px;
+    }
+
+    .timeline-content h3 {
+      color: #ffffff;
+      font-size: 17px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .timeline-content p {
+      color: rgba(249, 247, 247, 0.88);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    /* 隐藏逻辑 */
+    body.in-overview #enter-overview-btn {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       ★★★ 右侧面板专属：时间轴靠右，文字靠左 ★★★
+       ============================================================ */
+    #overview-panel .timeline-item {
+      border-left: none;
+      padding-left: 0;
+      margin-left: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      padding-right: 20px;
+      margin-right: 10px;
+    }
+
+    #overview-panel .timeline-item:last-child {
+      border-right-color: transparent;
+    }
+
+    #overview-panel .timeline-item::before {
+      left: auto;
+      right: -5px;
+    }
+
+    #overview-panel .timeline-date,
+    #overview-panel .timeline-content h3,
+    #overview-panel .timeline-content p {
+      text-align: right;
+    }
+
+    /* 标题与关闭按钮对调位置 */
+    #overview-panel .overview-header {
+      flex-direction: row-reverse;
+    }
+
+    #overview-panel .overview-header span {
+      margin-right: 34px;
+      padding-right: 10px;
     }
   </style>
 </head>
 
 <body>
   <div id="blur-layer"></div>
-  <!-- ★★★ 加载模糊层 ★★★ -->
   <div id="load-blur-layer"></div>
+
   <div id="sprite-layer">
     <canvas id="sprite-canvas"></canvas>
   </div>
-  <!-- ===== BGM唱片播放器（z-index:10 和序列帧同层）===== -->
+
+  <!-- BGM -->
   <div class="record-player" id="recordPlayer">
     <div class="record">
       <div class="center-dot"></div>
     </div>
-    <!-- 新增悬浮文字 -->
     <div class="tip-text">点击播放/暂停BGM</div>
   </div>
+
+  <!-- ★★★ 右侧入口文字 ★★★ -->
+  <div id="enter-overview-btn">&darr; Learning Log / Timeline &darr;</div>
+
+  <!-- ★★★ 右侧概览页面（时间轴面板） ★★★ -->
+  <div id="overview-panel">
+    <div class="overview-header">
+      <span>探索轨迹</span>
+      <div id="close-overview-btn">&times; 关闭/点击左侧空白处</div>
+    </div>
+
+    <div class="timeline-scroll">
+      <div class="timeline-track">
+        <div class="timeline-item">
+          <div class="timeline-date">通往未来</div>
+          <div class="timeline-content">
+            <h3></h3>
+            <p></p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2026-10-13</div>
+          <div class="timeline-content">
+            <h3>GAMES202-高质量实时渲染</h3>
+            <p>
+              Shadows(and env)<br>
+              Global Illumination<br>
+              Physically-based Shading<br>
+              Real-time ray tracing
+            </p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2026-09-30</div>
+          <div class="timeline-content">
+            <h3>制作个人作品集展示网站</h3>
+            <p>
+              起初这只是一个简单的 2D 网页<br>
+              学习 GAMES202 的 shadows 部分时<br>
+              嵌入 WebGL/Three.js 3D 场景<br>
+              在页面渲染 3D 模型
+            </p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2026-09-07</div>
+          <div class="timeline-content">
+            <h3>《Unity Shader入门精要》</h3>
+            <p>编写 shader</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2026-08-26</div>
+          <div class="timeline-content">
+            <h3>GAMES101-现代计算机图形学入门</h3>
+            <p>Rasterization 光栅化<br>
+              Curves and Meshes 几何<br>
+              Ray Tracing 光线追踪<br>
+              Animation/Simulation 动画与模拟
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部按钮 -->
   <div class="footer-group">
     <a class="social-btn" href="mailto:wjy683280@qq.com">
-      <span class="icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+      <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+          viewBox="0 0 16 16">
           <path
             d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.708 2.825L15 11.105V5.383zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383v5.722z" />
-        </svg>
-      </span> Email
+        </svg></span> Email
     </a>
     <a class="social-btn" href="https://github.com/wenjiayi2007" target="_blank">
-      <span class="icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+      <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+          viewBox="0 0 16 16">
           <path
             d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-        </svg>
-      </span> GitHub
+        </svg></span> GitHub
     </a>
   </div>
 
+  <audio id="bgm" src="music.mp3" loop preload="auto"></audio>
 
-  <audio id="bgm" src="music.mp3" loop preload="auto">
-    <script>
-      const player = document.getElementById("recordPlayer");
-      const bgm = document.getElementById("bgm");
-      let isPlaying = false;
-      player.onclick = () => {
-        if (!isPlaying) {
-          bgm.play().then(() => {
-            player.classList.add("playing");
-            isPlaying = true;
-          })
-        } else {
-          bgm.pause();
-          player.classList.remove("playing");
-          isPlaying = false;
-        }
+  <script>
+    // BGM 控制
+    const player = document.getElementById("recordPlayer");
+    const bgm = document.getElementById("bgm");
+    let isPlaying = false;
+    player.onclick = () => {
+      if (!isPlaying) {
+        bgm.play().then(() => {
+          player.classList.add("playing");
+          isPlaying = true;
+        }).catch(e => console.log("BGM 播放被拦截或文件缺失"));
+      } else {
+        bgm.pause();
+        player.classList.remove("playing");
+        isPlaying = false;
       }
-    </script>
-    <script>
-      const BLUR = {
-        enabled: true,
-        innerRadius: 150,
-        outerRadius: 400,
-      };
-      const blurLayer = document.getElementById('blur-layer');
-      function updateBlurMask(clientX, clientY) {
-        if (!BLUR.enabled) {
-          blurLayer.style.maskImage = 'none';
-          blurLayer.style.webkitMaskImage = 'none';
-          return;
-        }
-        const inner = BLUR.innerRadius;
-        const outer = BLUR.outerRadius;
-        const mask = `radial-gradient(circle at ${clientX}px ${clientY}px, ` +
-          `transparent 0px, transparent ${inner}px, black ${outer}px)`;
-        blurLayer.style.maskImage = mask;
-        blurLayer.style.webkitMaskImage = mask;
+    }
+
+    // 毛玻璃遮罩跟随
+    const BLUR = { enabled: true, innerRadius: 150, outerRadius: 400 };
+    const blurLayer = document.getElementById('blur-layer');
+    function updateBlurMask(clientX, clientY) {
+      if (!BLUR.enabled) return;
+      const mask = `radial-gradient(circle at ${clientX}px ${clientY}px, transparent 0px, transparent ${BLUR.innerRadius}px, black ${BLUR.outerRadius}px)`;
+      blurLayer.style.maskImage = mask;
+      blurLayer.style.webkitMaskImage = mask;
+    }
+    updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
+    window.addEventListener('mousemove', (e) => updateBlurMask(e.clientX, e.clientY));
+
+    // 加载模糊控制
+    const LOAD_BLUR = { blur: 17, tint: 'rgba(255, 255, 255, 0.05)', fadeDuration: 1.2, fadeDelay: 0.2 };
+    const loadBlurEl = document.getElementById('load-blur-layer');
+    loadBlurEl.style.backdropFilter = `blur(${LOAD_BLUR.blur}px)`;
+    loadBlurEl.style.webkitBackdropFilter = `blur(${LOAD_BLUR.blur}px)`;
+    loadBlurEl.style.background = LOAD_BLUR.tint;
+    loadBlurEl.style.transition = `opacity ${LOAD_BLUR.fadeDuration}s ease`;
+    function clearLoadBlur() {
+      setTimeout(() => {
+        loadBlurEl.classList.add('cleared');
+        setTimeout(() => { loadBlurEl.style.display = 'none'; }, LOAD_BLUR.fadeDuration * 1000 + 100);
+      }, LOAD_BLUR.fadeDelay * 1000);
+    }
+    window.clearLoadBlur = clearLoadBlur;
+
+    // 序列帧预加载
+    window.__spriteDoneFlag = false;
+    window.__onSpriteDone = null;
+    const SPRITE = {
+      folder: './title_3D/', frameCount: 12, prefix: 'frame_', ext: '.png', pad: 5,
+      fps: 11, loop: false, offsetX: 0, offsetY: 160, scale: 0.155, fadeIn: 0.3
+    };
+    (function () {
+      const layer = document.getElementById('sprite-layer');
+      const canvas = document.getElementById('sprite-canvas');
+      const ctx = canvas.getContext('2d', { alpha: true });
+      layer.style.transform = `translate(-50%, -50%) translate(${SPRITE.offsetX}px, ${SPRITE.offsetY}px) scale(${SPRITE.scale})`;
+
+      const framePaths = [];
+      for (let i = 1; i <= SPRITE.frameCount; i++) {
+        framePaths.push(SPRITE.folder + SPRITE.prefix + String(i).padStart(SPRITE.pad, '0') + SPRITE.ext);
       }
-      updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
-      window.addEventListener('mousemove', (e) => {
-        updateBlurMask(e.clientX, e.clientY);
+      const bitmaps = [];
+      Promise.all(
+        framePaths.map(async (path) => {
+          const res = await fetch(path);
+          const blob = await res.blob();
+          return await createImageBitmap(blob);
+        })
+      ).then((results) => {
+        bitmaps.push(...results);
+        canvas.width = bitmaps[0].width;
+        canvas.height = bitmaps[0].height;
+        ctx.drawImage(bitmaps[0], 0, 0);
+        layer.style.display = 'block';
+        layer.style.opacity = '1';
+        startPlayback();
+      }).catch((err) => {
+        console.error('序列帧加载失败：', err);
+        window.__spriteDoneFlag = true;
+        if (window.__onSpriteDone) window.__onSpriteDone();
       });
-      window.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          const t = e.touches[0];
-          updateBlurMask(t.clientX, t.clientY);
-        }
-      }, { passive: true });
-    </script>
-    <!-- ★★★ 加载模糊控制 ★★★ -->
-    <script>
-      const LOAD_BLUR = {
-        blur: 17,                      // 初始模糊强度（px）
-        tint: 'rgba(255, 255, 255, 0.05)', // 覆盖色
-        fadeDuration: 1.2,             // 淡出时长（秒）
-        fadeDelay: 0.2,                // 模型加载完后再延迟多久淡出（秒）
-      };
-      const loadBlurEl = document.getElementById('load-blur-layer');
-      loadBlurEl.style.backdropFilter = `blur(${LOAD_BLUR.blur}px)`;
-      loadBlurEl.style.webkitBackdropFilter = `blur(${LOAD_BLUR.blur}px)`;
-      loadBlurEl.style.background = LOAD_BLUR.tint;
-      loadBlurEl.style.transition = `opacity ${LOAD_BLUR.fadeDuration}s ease`;
-      function clearLoadBlur() {
-        setTimeout(() => {
-          loadBlurEl.classList.add('cleared');
-          console.log('加载模糊开始淡出（' + LOAD_BLUR.fadeDuration + 's）');
-          setTimeout(() => {
-            loadBlurEl.style.display = 'none';
-            console.log('加载模糊已移除');
-          }, LOAD_BLUR.fadeDuration * 1000 + 100);
-        }, LOAD_BLUR.fadeDelay * 1000);
-      }
-      window.clearLoadBlur = clearLoadBlur;
-      window.LOAD_BLUR = LOAD_BLUR;
-    </script>
-    <script>
-      window.__spriteDoneFlag = false;
-      window.__onSpriteDone = null;
-      const SPRITE = {
-        folder: './title_3D/',
-        frameCount: 12,
-        prefix: 'frame_',
-        ext: '.png',
-        pad: 5,
-        fps: 11,
-        loop: false,
-        offsetX: 0,
-        offsetY: 160,
-        scale: 0.155,
-        fadeIn: 0.3,
-      };
-      window.SPRITE = SPRITE;
-      (function () {
-        const layer = document.getElementById('sprite-layer');
-        const canvas = document.getElementById('sprite-canvas');
-        const ctx = canvas.getContext('2d', { alpha: true });
-        function applyTransform() {
-          layer.style.transform =
-            `translate(-50%, -50%) translate(${SPRITE.offsetX}px, ${SPRITE.offsetY}px) scale(${SPRITE.scale})`;
-        }
-        applyTransform();
-        window.updateSpriteTransform = applyTransform;
-        function framePath(i) {
-          return SPRITE.folder + SPRITE.prefix + String(i).padStart(SPRITE.pad, '0') + SPRITE.ext;
-        }
-        const framePaths = [];
-        for (let i = 1; i <= SPRITE.frameCount; i++) framePaths.push(framePath(i));
-        const bitmaps = [];
-        Promise.all(
-          framePaths.map(async (path) => {
-            const res = await fetch(path);
-            const blob = await res.blob();
-            return await createImageBitmap(blob);
-          })
-        ).then((results) => {
-          bitmaps.push(...results);
-          console.log('序列帧全部就绪（' + bitmaps.length + ' 帧）');
-          canvas.width = bitmaps[0].width;
-          canvas.height = bitmaps[0].height;
-          ctx.drawImage(bitmaps[0], 0, 0);
-          layer.style.display = 'block';
-          startPlayback();
-        }).catch((err) => {
-          console.error('序列帧加载失败：', err);
-          window.__spriteDoneFlag = true;
-          if (window.__onSpriteDone) window.__onSpriteDone();
-        });
-        function startPlayback() {
-          if (SPRITE.fadeIn > 0) {
-            layer.style.opacity = '0';
-            layer.style.transition = `opacity ${SPRITE.fadeIn}s ease`;
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                layer.style.opacity = '1';
-              });
-            });
-          } else {
-            layer.style.opacity = '1';
-          }
-          let index = 0;
-          const interval = 1000 / SPRITE.fps;
-          let lastTime = performance.now();
-          function tick(now) {
-            requestAnimationFrame(tick);
-            const elapsed = now - lastTime;
-            if (elapsed < interval) return;
-            if (elapsed > interval * 3) {
-              lastTime = now;
-            } else {
-              lastTime += interval;
-            }
-            index++;
-            if (index >= bitmaps.length) {
-              if (SPRITE.loop) {
-                index = 0;
-              } else {
-                window.__spriteDoneFlag = true;
-                if (window.__onSpriteDone) window.__onSpriteDone();
-                return;
-              }
-            }
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(bitmaps[index], 0, 0);
-          }
+
+      function startPlayback() {
+        let index = 0;
+        const interval = 1000 / SPRITE.fps;
+        let lastTime = performance.now();
+        function tick(now) {
           requestAnimationFrame(tick);
+          const elapsed = now - lastTime;
+          if (elapsed < interval) return;
+          lastTime += interval;
+          index++;
+          if (index >= bitmaps.length) {
+            window.__spriteDoneFlag = true;
+            if (window.__onSpriteDone) window.__onSpriteDone();
+            return;
+          }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(bitmaps[index], 0, 0);
         }
-      })();
-    </script>
-    <script>
-      window.__modelPromise = fetch('./wjy1.glb').then(function (res) {
-        if (!res.ok) throw new Error('模型请求失败：HTTP ' + res.status);
-        return res.arrayBuffer();
+        requestAnimationFrame(tick);
+      }
+    })();
+
+    // 模型 Fetch
+    window.__modelPromise = fetch('./wjy1.glb').then(function (res) {
+      if (!res.ok) throw new Error('模型请求失败');
+      return res.arrayBuffer();
+    });
+  </script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import { OutlineEffect } from 'three/addons/effects/OutlineEffect.js';
+
+    const LOADING = { parseModelAt: 1100 };
+    const GAZE = {
+      enabled: true, leftBoneName: 'eyeL', rightBoneName: 'eyeR',
+      smooth: 0.80, mouseRange: 1.5, horizontalAxis: 'x', verticalAxis: 'y',
+      horizontalFlip: false, verticalFlip: false, horizontalScale: 1.5, verticalScale: 0.8,
+      moveAmount: 0.05, eyeSeparation: 0.15,
+    };
+    const HIGHLIGHT = {
+      enabled: true, color: '#ffeeee', intensity: 0.5, distance: 0.0005,
+      decay: 0, followDistance: 0.5, offsetX: 0.0, offsetY: 0.0, smooth: 0.25,
+    };
+
+    function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    const COLORS = {
+      keyLight: cssVar('--light-key'), fillLight: cssVar('--light-fill'),
+      ambientLight: cssVar('--light-ambient'), outline: cssVar('--outline'),
+      materialFallback: cssVar('--material-fallback'), clear: cssVar('--clear'),
+    };
+    function colorToRgb01(hex) { const c = new THREE.Color(hex); return [c.r, c.g, c.b]; }
+
+    const VIEW = {
+      fov: 45, position: { x: 0, y: 1.39, z: 0.85 }, rotation: { x: 0, y: 5, z: 0 },
+      lookAtModel: false, lookAtHeight: 0.55,
+    };
+    const LIGHT = {
+      key: { position: { x: 0.8, y: 2, z: 5 }, intensity: 1.3, castShadow: true },
+      fill: { position: { x: 5, y: 3, z: -4 }, intensity: 1.2 },
+      ambient: { intensity: 2 }, envIntensity: 0.35, targetHeightRatio: 0.5,
+    };
+    const TOON = { steps: 3, outlineThickness: 0.0025, outlineAlpha: 1.0 };
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(new THREE.Color(COLORS.clear), 0);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.NoToneMapping;
+    document.body.appendChild(renderer.domElement);
+
+    const effect = new OutlineEffect(renderer, {
+      defaultThickness: TOON.outlineThickness, defaultColor: colorToRgb01(COLORS.outline),
+      defaultAlpha: TOON.outlineAlpha, defaultKeepAlive: true, defaultVisible: true,
+    });
+
+    const scene = new THREE.Scene();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environmentIntensity = LIGHT.envIntensity;
+
+    const camera = new THREE.PerspectiveCamera(VIEW.fov, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    scene.add(new THREE.AmbientLight(new THREE.Color(COLORS.ambientLight), LIGHT.ambient.intensity));
+    const keyLight = new THREE.DirectionalLight(new THREE.Color(COLORS.keyLight), LIGHT.key.intensity);
+    keyLight.position.set(LIGHT.key.position.x, LIGHT.key.position.y, LIGHT.key.position.z);
+    keyLight.castShadow = LIGHT.key.castShadow;
+    keyLight.shadow.mapSize.set(2048, 2048);
+    keyLight.shadow.bias = -0.0005;
+    scene.add(keyLight);
+    scene.add(keyLight.target);
+    const fillLight = new THREE.DirectionalLight(new THREE.Color(COLORS.fillLight), LIGHT.fill.intensity);
+    fillLight.position.set(LIGHT.fill.position.x, LIGHT.fill.position.y, LIGHT.fill.position.z);
+    scene.add(fillLight);
+
+    const highlightLight = new THREE.PointLight(new THREE.Color(HIGHLIGHT.color), HIGHLIGHT.intensity, HIGHLIGHT.distance, HIGHLIGHT.decay);
+    highlightLight.visible = HIGHLIGHT.enabled;
+    scene.add(highlightLight);
+
+    function makeToonGradient(steps) {
+      const data = new Uint8Array(steps * 4);
+      for (let i = 0; i < steps; i++) {
+        const v = Math.round(((i + 0.6) / steps) * 255);
+        data[i * 4 + 0] = v; data[i * 4 + 1] = v; data[i * 4 + 2] = v; data[i * 4 + 3] = 255;
+      }
+      const tex = new THREE.DataTexture(data, steps, 1, THREE.RGBAFormat);
+      tex.minFilter = THREE.NearestFilter; tex.magFilter = THREE.NearestFilter;
+      tex.generateMipmaps = false; tex.needsUpdate = true;
+      return tex;
+    }
+    const toonGradient = makeToonGradient(TOON.steps);
+
+    // 鼠标输入
+    const mouseNDC = { x: 0, y: 0 };
+    window.addEventListener('mousemove', (e) => {
+      mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // 高光小灯跟随
+    const _highlightTarget = new THREE.Vector3();
+    let _highlightInited = false;
+    function updateHighlight() {
+      if (!HIGHLIGHT.enabled) return;
+      _highlightTarget.set(mouseNDC.x, mouseNDC.y, 0.5);
+      _highlightTarget.unproject(camera);
+      _highlightTarget.sub(camera.position).normalize();
+      const targetPos = camera.position.clone().addScaledVector(_highlightTarget, HIGHLIGHT.followDistance);
+      if (!_highlightInited) { highlightLight.position.copy(targetPos); _highlightInited = true; }
+      else { highlightLight.position.lerp(targetPos, HIGHLIGHT.smooth); }
+    }
+
+    // 眼球控制
+    let leftBone = null, rightBone = null, leftPos0 = null, rightPos0 = null;
+    let curMouseX = 0, curMouseY = 0;
+    function setupGaze(model) {
+      leftBone = model.getObjectByName(GAZE.leftBoneName);
+      rightBone = model.getObjectByName(GAZE.rightBoneName);
+      if (leftBone) leftPos0 = leftBone.position.clone();
+      if (rightBone) rightPos0 = rightBone.position.clone();
+    }
+    function updateGaze() {
+      if (!GAZE.enabled || !leftBone || !rightBone) return;
+      curMouseX += (mouseNDC.x - curMouseX) * GAZE.smooth;
+      curMouseY += (mouseNDC.y - curMouseY) * GAZE.smooth;
+      const mx = curMouseX * GAZE.mouseRange; const my = curMouseY * GAZE.mouseRange; const amt = GAZE.moveAmount;
+
+      let ldx = (mx + GAZE.eyeSeparation) * GAZE.horizontalScale; let ldy = my * GAZE.verticalScale;
+      leftBone.position.copy(leftPos0); leftBone.position[GAZE.horizontalAxis] += ldx * amt; leftBone.position[GAZE.verticalAxis] += ldy * amt;
+
+      let rdx = (mx - GAZE.eyeSeparation) * GAZE.horizontalScale; let rdy = my * GAZE.verticalScale;
+      rightBone.position.copy(rightPos0); rightBone.position[GAZE.horizontalAxis] += rdx * amt; rightBone.position[GAZE.verticalAxis] += rdy * amt;
+    }
+
+    // ============================================================
+    // ★★★ 状态机与曲线运镜配置（右侧专属） ★★★
+    // ============================================================
+    let isOverviewMode = false;
+
+    const parallaxStrength = 0.07; // 鼠标视差强度
+    const camOriginPos = new THREE.Vector3(VIEW.position.x, VIEW.position.y, VIEW.position.z);
+
+    // ★ 严格使用你之前调好的右侧相机参数
+    const OVERVIEW_CAM = {
+      targetPos: new THREE.Vector3(0.25, 1.28, 0.45),
+      lookAt: new THREE.Vector3(0.15, 1.32, 0),
+    };
+
+    let cameraProgress = 0;
+    const CAMERA_DURATION = 1.1;
+
+    function easeInOutCubic(x) {
+      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    }
+
+    function updateCamera(deltaTime) {
+      const targetProgress = isOverviewMode ? 1.0 : 0.0;
+
+      if (cameraProgress < targetProgress) {
+        cameraProgress = Math.min(targetProgress, cameraProgress + deltaTime / CAMERA_DURATION);
+      } else if (cameraProgress > targetProgress) {
+        cameraProgress = Math.max(targetProgress, cameraProgress - deltaTime / CAMERA_DURATION);
+      }
+
+      const smoothT = easeInOutCubic(cameraProgress);
+
+      // 主页面基础位置 + 鼠标视差
+      const offsetX = THREE.MathUtils.clamp(mouseNDC.x * parallaxStrength, -0.07, 0.07);
+      const offsetY = THREE.MathUtils.clamp(mouseNDC.y * parallaxStrength, -0.07, 0.07);
+      
+      const homePos = new THREE.Vector3(
+        camOriginPos.x + offsetX,
+        camOriginPos.y + offsetY,
+        camOriginPos.z
+      );
+      const homeLookAt = new THREE.Vector3(0, 1.27, 0);
+
+      camera.position.lerpVectors(homePos, OVERVIEW_CAM.targetPos, smoothT);
+      const currentLookAt = new THREE.Vector3().lerpVectors(homeLookAt, OVERVIEW_CAM.lookAt, smoothT);
+      camera.lookAt(currentLookAt);
+    }
+    // ============================================================
+
+    // UI 元素获取
+    const enterBtn = document.getElementById('enter-overview-btn');
+    const closeBtn = document.getElementById('close-overview-btn');
+
+    // 关闭
+    function closeOverview() {
+      if (!isOverviewMode) return;
+      isOverviewMode = false;
+      document.body.classList.remove('in-overview');
+      GAZE.enabled = true;
+      HIGHLIGHT.enabled = true;
+    }
+
+    // 打开
+    enterBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isOverviewMode = true;
+      document.body.classList.add('in-overview');
+      HIGHLIGHT.enabled = false;
+    });
+
+    // 关闭按钮
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeOverview();
+    });
+
+    // 全局点击关闭（点击左侧空白处）
+    document.addEventListener('click', (e) => {
+      if (!isOverviewMode) return;
+      if (e.target.closest('#overview-panel') || e.target.closest('#enter-overview-btn')) {
+        return;
+      }
+      closeOverview();
+    });
+
+    // ============================================================
+
+    const clock = new THREE.Clock();
+    let mixer = null;
+
+    renderer.setAnimationLoop(() => {
+      const delta = clock.getDelta();
+      if (mixer) mixer.update(delta);
+
+      updateCamera(delta);
+      updateGaze();
+      updateHighlight();
+      effect.render(scene, camera);
+    });
+
+    // 模型加载逻辑
+    await new Promise((resolve) => {
+      const check = () => {
+        if (window.__spriteDoneFlag) return resolve();
+        const elapsed = performance.now() - window.__pageStartTime;
+        if (elapsed >= LOADING.parseModelAt) return resolve();
+        requestAnimationFrame(check);
+      };
+      check();
+    });
+
+    const loader = new GLTFLoader();
+    const draco = new DRACOLoader();
+    draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
+    loader.setDRACOLoader(draco);
+
+    try {
+      const arrayBuffer = await window.__modelPromise;
+      loader.parse(arrayBuffer, './', onModelLoaded, onLoadError);
+    } catch (err) { onLoadError(err); }
+
+    function onLoadError(err) {
+      console.error('模型加载失败：', err);
+      if (window.clearLoadBlur) window.clearLoadBlur();
+    }
+
+    function onModelLoaded(gltf) {
+      const model = gltf.scene;
+      model.traverse((obj) => {
+        if (!obj.isMesh) return;
+        obj.castShadow = true; obj.receiveShadow = true; obj.frustumCulled = false;
+        const oldMats = Array.isArray(obj.material) ? obj.material : [obj.material];
+        const newMats = oldMats.map((old) => {
+          const toon = new THREE.MeshToonMaterial({
+            map: old.map || null, color: old.color ? old.color.clone() : new THREE.Color(COLORS.materialFallback),
+            gradientMap: toonGradient, alphaTest: old.alphaTest || 0, transparent: old.transparent || false,
+            opacity: old.opacity !== undefined ? old.opacity : 1, side: old.side,
+          });
+          if (toon.map) toon.map.colorSpace = THREE.SRGBColorSpace;
+          toon.userData.outlineParameters = {
+            thickness: TOON.outlineThickness, color: colorToRgb01(COLORS.outline),
+            alpha: TOON.outlineAlpha, visible: true, keepAlive: true,
+          };
+          return toon;
+        });
+        obj.material = Array.isArray(obj.material) ? newMats : newMats[0];
       });
-    </script>
-    <script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
-}
-</script>
-    <script type="module">
-      import * as THREE from 'three';
-      import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-      import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-      import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-      import { OutlineEffect } from 'three/addons/effects/OutlineEffect.js';
-      const LOADING = {
-        parseModelAt: 1100,
-      };
-      window.LOADING = LOADING;
-      const GAZE = {
-        enabled: true,
-        leftBoneName: 'eyeL',
-        rightBoneName: 'eyeR',
-        smooth: 0.80,
-        mouseRange: 1.5,
-        horizontalAxis: 'x',
-        verticalAxis: 'y',
-        horizontalFlip: false,
-        verticalFlip: false,
-        horizontalScale: 1.5,
-        verticalScale: 0.8,
-        moveAmount: 0.05,
-        eyeSeparation: 0.15,
-      };
-      window.GAZE = GAZE;
-      const HIGHLIGHT = {
-        enabled: true,
-        color: '#ffeeee',
-        intensity: 0.06,
-        distance: 0.0005,
-        decay: 2,
-        followDistance: 0.5,
-        offsetX: 0.0,
-        offsetY: 0.0,
-        smooth: 0.25,
-      };
-      window.HIGHLIGHT = HIGHLIGHT;
-      function cssVar(name) {
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+      const junk = [];
+      model.traverse((obj) => {
+        if (!obj.isMesh) return;
+        if (/background|bg_?box|sky|dome|sphere|room|stage|floor|ground|groundplane|shadow_?plane/i.test(obj.name)) {
+          junk.push(obj);
+        }
+      });
+      junk.forEach((o) => o.parent && o.parent.remove(o));
+      scene.add(model);
+
+      const box0 = new THREE.Box3().setFromObject(model);
+      const c0 = box0.getCenter(new THREE.Vector3());
+      model.position.x -= c0.x; model.position.z -= c0.z; model.position.y -= box0.min.y;
+
+      const box = new THREE.Box3().setFromObject(model);
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+
+      camera.position.set(VIEW.position.x, VIEW.position.y, VIEW.position.z);
+      camera.rotation.set(
+        THREE.MathUtils.degToRad(VIEW.rotation.x),
+        THREE.MathUtils.degToRad(VIEW.rotation.y),
+        THREE.MathUtils.degToRad(VIEW.rotation.z),
+        'XYZ'
+      );
+      camera.near = maxDim / 100; camera.far = maxDim * 100; camera.updateProjectionMatrix();
+
+      const d = maxDim * 0.75 + 1;
+      const sc = keyLight.shadow.camera;
+      sc.left = -d; sc.right = d; sc.top = d; sc.bottom = -d; sc.near = 0.1; sc.far = maxDim * 50;
+      sc.updateProjectionMatrix();
+
+      const targetY = size.y * LIGHT.targetHeightRatio;
+      keyLight.target.position.set(0, targetY, 0); keyLight.target.updateMatrixWorld();
+
+      HIGHLIGHT.distance = maxDim * 0.8;
+      highlightLight.distance = HIGHLIGHT.distance;
+
+      if (gltf.animations && gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        gltf.animations.forEach((clip) => {
+          const action = mixer.clipAction(clip);
+          action.setLoop(THREE.LoopRepeat, Infinity); action.clampWhenFinished = false; action.play();
+        });
       }
-      const COLORS = {
-        bgTop: cssVar('--bg-top'),
-        bgBottom: cssVar('--bg-bottom'),
-        keyLight: cssVar('--light-key'),
-        fillLight: cssVar('--light-fill'),
-        ambientLight: cssVar('--light-ambient'),
-        outline: cssVar('--outline'),
-        materialFallback: cssVar('--material-fallback'),
-        clear: cssVar('--clear'),
-      };
-      function colorToRgb01(hex) {
-        const c = new THREE.Color(hex);
-        return [c.r, c.g, c.b];
-      }
-      /*相机*/
-      const VIEW = {
-        fov: 45,
-        position: { x: 0, y: 1.39, z: 0.85 },
-        rotation: { x: 0, y: 5, z: 0 },
-        lookAtModel: false,
-        lookAtHeight: 0.55,
-      };
-      const LIGHT = {
-        key: { position: { x: 0.8, y: 2, z: 5 }, intensity: 1.3, castShadow: true },
-        fill: { position: { x: 5, y: 3, z: -4 }, intensity: 1.2 },
-        ambient: { intensity: 2 },
-        envIntensity: 0.35,
-        targetHeightRatio: 0.5,
-      };
-      const TOON = {
-        steps: 3,
-        outlineThickness: 0.0025,
-        outlineAlpha: 1.0,
-      };
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      setupGaze(model);
+      if (window.clearLoadBlur) window.clearLoadBlur();
+    }
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(new THREE.Color(COLORS.clear), 0);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      renderer.toneMapping = THREE.NoToneMapping;
-      renderer.toneMappingExposure = 1.0;
-      document.body.appendChild(renderer.domElement);
-      const effect = new OutlineEffect(renderer, {
-        defaultThickness: TOON.outlineThickness,
-        defaultColor: colorToRgb01(COLORS.outline),
-        defaultAlpha: TOON.outlineAlpha,
-        defaultKeepAlive: true,
-        defaultVisible: true,
-      });
-      const scene = new THREE.Scene();
-      const pmrem = new THREE.PMREMGenerator(renderer);
-      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      scene.environmentIntensity = LIGHT.envIntensity;
-      const camera = new THREE.PerspectiveCamera(
-        VIEW.fov, window.innerWidth / window.innerHeight, 0.1, 1000
-      );
-      scene.add(new THREE.AmbientLight(
-        new THREE.Color(COLORS.ambientLight), LIGHT.ambient.intensity
-      ));
-      const keyLight = new THREE.DirectionalLight(
-        new THREE.Color(COLORS.keyLight), LIGHT.key.intensity
-      );
-      keyLight.position.set(LIGHT.key.position.x, LIGHT.key.position.y, LIGHT.key.position.z);
-      keyLight.castShadow = LIGHT.key.castShadow;
-      keyLight.shadow.mapSize.set(2048, 2048);
-      keyLight.shadow.bias = -0.0005;
-      scene.add(keyLight);
-      scene.add(keyLight.target);
-      const fillLight = new THREE.DirectionalLight(
-        new THREE.Color(COLORS.fillLight), LIGHT.fill.intensity
-      );
-      fillLight.position.set(LIGHT.fill.position.x, LIGHT.fill.position.y, LIGHT.fill.position.z);
-      scene.add(fillLight);
-      const highlightLight = new THREE.PointLight(
-        new THREE.Color(HIGHLIGHT.color),
-        HIGHLIGHT.intensity,
-        HIGHLIGHT.distance,
-        HIGHLIGHT.decay
-      );
-      highlightLight.visible = HIGHLIGHT.enabled;
-      scene.add(highlightLight);
-      highlightLight.position.set(0, 1.2, 1);
-      function makeToonGradient(steps) {
-        const data = new Uint8Array(steps * 4);
-        for (let i = 0; i < steps; i++) {
-          const v = Math.round(((i + 0.6) / steps) * 255);
-          data[i * 4 + 0] = v;
-          data[i * 4 + 1] = v;
-          data[i * 4 + 2] = v;
-          data[i * 4 + 3] = 255;
-        }
-        const tex = new THREE.DataTexture(data, steps, 1, THREE.RGBAFormat);
-        tex.minFilter = THREE.NearestFilter;
-        tex.magFilter = THREE.NearestFilter;
-        tex.generateMipmaps = false;
-        tex.needsUpdate = true;
-        return tex;
-      }
-      const toonGradient = makeToonGradient(TOON.steps);
-      const mouseNDC = { x: 0, y: 0 };
-      window.addEventListener('mousemove', (e) => {
-        mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
-      });
-      window.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          const t = e.touches[0];
-          mouseNDC.x = (t.clientX / window.innerWidth) * 2 - 1;
-          mouseNDC.y = -(t.clientY / window.innerHeight) * 2 + 1;
-        }
-      }, { passive: true });
-      const _highlightTarget = new THREE.Vector3();
-      let _highlightInited = false;
-      function updateHighlight() {
-        if (!HIGHLIGHT.enabled) return;
-        _highlightTarget.set(mouseNDC.x, mouseNDC.y, 0.5);
-        _highlightTarget.unproject(camera);
-        _highlightTarget.sub(camera.position).normalize();
-        const targetPos = camera.position.clone().addScaledVector(
-          _highlightTarget, HIGHLIGHT.followDistance
-        );
-        if (!_highlightInited) {
-          highlightLight.position.copy(targetPos);
-          _highlightInited = true;
-        } else {
-          highlightLight.position.lerp(targetPos, HIGHLIGHT.smooth);
-        }
-      }
-      let leftBone = null;
-      let rightBone = null;
-      let leftPos0 = null;
-      let rightPos0 = null;
-      let curMouseX = 0;
-      let curMouseY = 0;
-      function setupGaze(model) {
-        leftBone = model.getObjectByName(GAZE.leftBoneName);
-        rightBone = model.getObjectByName(GAZE.rightBoneName);
-        if (leftBone) leftPos0 = leftBone.position.clone();
-        if (rightBone) rightPos0 = rightBone.position.clone();
-        console.log('左眼骨骼：', leftBone ? leftBone.name : '× 未找到');
-        console.log('右眼骨骼：', rightBone ? rightBone.name : '× 未找到');
-      }
-      function updateGaze() {
-        if (!GAZE.enabled || !leftBone || !rightBone || !leftPos0 || !rightPos0) return;
-        const sx = GAZE.invertX ? -1 : 1;
-        const sy = GAZE.invertY ? -1 : 1;
-        curMouseX += (mouseNDC.x * sx - curMouseX) * GAZE.smooth;
-        curMouseY += (mouseNDC.y * sy - curMouseY) * GAZE.smooth;
-        const mx = curMouseX * GAZE.mouseRange;
-        const my = curMouseY * GAZE.mouseRange;
-        const amt = GAZE.moveAmount;
-        const hSign = GAZE.horizontalFlip ? -1 : 1;
-        const vSign = GAZE.verticalFlip ? -1 : 1;
-        const hScale = GAZE.horizontalScale;
-        const vScale = GAZE.verticalScale;
-        const hAxis = GAZE.horizontalAxis;
-        const vAxis = GAZE.verticalAxis;
-        const sep = GAZE.eyeSeparation;
-        let ldx = (mx + sep) * hScale * hSign;
-        let ldy = my * vScale * vSign;
-        leftBone.position.copy(leftPos0);
-        if (hAxis) leftBone.position[hAxis] += ldx * amt;
-        if (vAxis) leftBone.position[vAxis] += ldy * amt;
-        let rdx = (mx - sep) * hScale * hSign;
-        let rdy = my * vScale * vSign;
-        rightBone.position.copy(rightPos0);
-        if (hAxis) rightBone.position[hAxis] += rdx * amt;
-        if (vAxis) rightBone.position[vAxis] += rdy * amt;
-      }
-      // ========= 鼠标视差相机配置 =========
-      const parallaxStrength = 0.07; // 视差幅度，越小越轻微，推荐0.05~0.12
-      const camOriginPos = new THREE.Vector3(VIEW.position.x, VIEW.position.y, VIEW.position.z);
-      const lookCenter = new THREE.Vector3(0, 1.27, 0); // 相机一直看向人物中心点
-
-      const clock = new THREE.Clock();
-      let mixer = null;
-      renderer.setAnimationLoop(() => {
-        const delta = clock.getDelta();
-        if (mixer) mixer.update(delta);
-
-        // ====== 相机视差逻辑 ======
-        // 限制最大偏移，防止鼠标到边角偏移过大
-        const offsetX = THREE.MathUtils.clamp(mouseNDC.x * parallaxStrength, -0.07, 0.07);
-        const offsetY = THREE.MathUtils.clamp(mouseNDC.y * parallaxStrength, -0.07, 0.07);
-        const targetCamPos = new THREE.Vector3(
-          camOriginPos.x + offsetX,
-          camOriginPos.y + offsetY,
-          camOriginPos.z
-        );
-        // 平滑插值
-        camera.position.lerp(targetCamPos, 0.06);
-        // 相机始终看向模型中心
-        camera.lookAt(lookCenter);
-        // ==========================
-
-        updateGaze();
-        updateHighlight();
-        effect.render(scene, camera);
-      });
-
-      /* ==================== 等待序列帧 / 时间点 ==================== */
-      console.log('等待中…（将在 ' + LOADING.parseModelAt + 'ms 后开始解析模型）');
-      await new Promise((resolve) => {
-        const check = () => {
-          if (window.__spriteDoneFlag) {
-            console.log('序列帧已播完，开始解析模型');
-            return resolve();
-          }
-          const elapsed = performance.now() - window.__pageStartTime;
-          if (elapsed >= LOADING.parseModelAt) {
-            console.log('到达时间点（' + elapsed.toFixed(0) + 'ms），开始解析模型');
-            return resolve();
-          }
-          requestAnimationFrame(check);
-        };
-        check();
-      });
-      const loader = new GLTFLoader();
-      const draco = new DRACOLoader();
-      draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
-      loader.setDRACOLoader(draco);
-      try {
-        const arrayBuffer = await window.__modelPromise;
-        loader.parse(arrayBuffer, './', onModelLoaded, onLoadError);
-      } catch (err) {
-        onLoadError(err);
-      }
-      function onLoadError(err) {
-        console.error('模型加载失败：', err);
-        // 加载失败也把加载模糊淡出，避免卡住
-        if (window.clearLoadBlur) window.clearLoadBlur();
-      }
-      function onModelLoaded(gltf) {
-        const model = gltf.scene;
-        model.traverse((obj) => {
-          if (!obj.isMesh) return;
-          obj.castShadow = true;
-          obj.receiveShadow = true;
-          obj.frustumCulled = false;
-          const oldMats = Array.isArray(obj.material) ? obj.material : [obj.material];
-          const newMats = oldMats.map((old) => {
-            const toon = new THREE.MeshToonMaterial({
-              map: old.map || null,
-              color: old.color ? old.color.clone() : new THREE.Color(COLORS.materialFallback),
-              gradientMap: toonGradient,
-              alphaTest: old.alphaTest || 0,
-              transparent: old.transparent || false,
-              opacity: old.opacity !== undefined ? old.opacity : 1,
-              side: old.side,
-            });
-            if (toon.map) toon.map.colorSpace = THREE.SRGBColorSpace;
-            toon.userData.outlineParameters = {
-              thickness: TOON.outlineThickness,
-              color: colorToRgb01(COLORS.outline),
-              alpha: TOON.outlineAlpha,
-              visible: true,
-              keepAlive: true,
-            };
-            return toon;
-          });
-          obj.material = Array.isArray(obj.material) ? newMats : newMats[0];
-        });
-        const junk = [];
-        model.traverse((obj) => {
-          if (!obj.isMesh) return;
-          if (/background|bg_?box|sky|dome|sphere|room|stage|floor|ground|groundplane|shadow_?plane/i.test(obj.name)) {
-            junk.push(obj);
-          }
-        });
-        junk.forEach((o) => o.parent && o.parent.remove(o));
-        scene.add(model);
-        const box0 = new THREE.Box3().setFromObject(model);
-        const c0 = box0.getCenter(new THREE.Vector3());
-        model.position.x -= c0.x;
-        model.position.z -= c0.z;
-        model.position.y -= box0.min.y;
-        const box = new THREE.Box3().setFromObject(model);
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        camera.position.set(VIEW.position.x, VIEW.position.y, VIEW.position.z);
-        if (VIEW.lookAtModel) {
-          const lookY = box.min.y + size.y * VIEW.lookAtHeight;
-          camera.lookAt(0, lookY, 0);
-        } else {
-          camera.rotation.set(
-            THREE.MathUtils.degToRad(VIEW.rotation.x),
-            THREE.MathUtils.degToRad(VIEW.rotation.y),
-            THREE.MathUtils.degToRad(VIEW.rotation.z),
-            'XYZ'
-          );
-        }
-        camera.near = maxDim / 100;
-        camera.far = maxDim * 100;
-        camera.updateProjectionMatrix();
-        const d = maxDim * 0.75 + 1;
-        const sc = keyLight.shadow.camera;
-        sc.left = -d; sc.right = d; sc.top = d; sc.bottom = -d;
-        sc.near = 0.1; sc.far = maxDim * 50;
-        sc.updateProjectionMatrix();
-        const targetY = LIGHT.targetHeightRatio !== null
-          ? size.y * LIGHT.targetHeightRatio
-          : size.y * 0.5;
-        keyLight.target.position.set(0, targetY, 0);
-        keyLight.target.updateMatrixWorld();
-        HIGHLIGHT.distance = maxDim * 0.8;
-        highlightLight.distance = HIGHLIGHT.distance;
-        if (gltf.animations && gltf.animations.length > 0) {
-          mixer = new THREE.AnimationMixer(model);
-          gltf.animations.forEach((clip) => {
-            const action = mixer.clipAction(clip);
-            action.setLoop(THREE.LoopRepeat, Infinity);
-            action.clampWhenFinished = false;
-            action.play();
-          });
-          console.log('动画片段：', gltf.animations.map((c) => c.name));
-        }
-        setupGaze(model);
-        console.log('模型加载完成 ✔ 尺寸：', size.toArray());
-        /* ★ 触发加载模糊淡出 */
-        if (window.clearLoadBlur) window.clearLoadBlur();
-      }
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-    </script>
+    });
+  </script>
 </body>
 
 </html>
