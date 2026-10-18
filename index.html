@@ -572,7 +572,20 @@
       blurLayer.style.webkitMaskImage = mask;
     }
     updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
+        // 电脑端鼠标
     window.addEventListener('mousemove', (e) => updateBlurMask(e.clientX, e.clientY));
+
+    // 移动端手指滑动
+    window.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (touch) updateBlurMask(touch.clientX, touch.clientY);
+    }, { passive: true });
+    
+    // 移动端手指按下（点按也能触发）
+    window.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (touch) updateBlurMask(touch.clientX, touch.clientY);
+    }, { passive: true });
 
     // 加载模糊控制
     const LOAD_BLUR = { blur: 17, tint: 'rgba(255, 255, 255, 0.05)', fadeDuration: 1.2, fadeDelay: 0.2 };
