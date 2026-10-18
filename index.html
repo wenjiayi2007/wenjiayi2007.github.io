@@ -39,12 +39,12 @@
       background-attachment: fixed;
       background-size: cover;
       cursor: default;
-      touch-action: none;
+      /* ★★★ 修改点：删除了 touch-action: none，避免影响面板滚动 ★★★ */
     }
 
     canvas {
       display: block;
-      touch-action: none;
+      /* ★★★ 修改点：删除了 touch-action: none ★★★ */
     }
 
     /* 鼠标跟随毛玻璃 */
@@ -322,6 +322,8 @@
       padding-top: 22px;
       -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
       mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
+      /* ★★★ 修改点：加上 iOS 惯性滚动，让平板更丝滑 ★★★ */
+      -webkit-overflow-scrolling: touch; 
     }
 
     /* 显示并自定义滚动条 */
@@ -574,35 +576,10 @@
       blurLayer.style.webkitMaskImage = mask;
     }
     updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
-    // 电脑端鼠标
+    
+    // ★★★ 修改点：把这里的触摸事件全部干掉，只保留电脑端鼠标 ★★★
     // 电脑端
     window.addEventListener('mousemove', (e) => updateBlurMask(e.clientX, e.clientY));
-
-    // 移动端手指滑动（关键：必须加 passive: false 才能拦截滚动）
-    window.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      if (!touch) return;
-
-      // ★ 关键：如果在看面板，只更新手指的 NDC，用来转动眼球，绝不拦截滚动！
-      if (isOverviewMode) {
-        // 面板宽 530，左侧可视区域是 window.innerWidth - 530
-        // 手指在面板上滑动时，我们可以只让眼球看向手指方向
-        updateNDC(touch.clientX, touch.clientY);
-        return; // 直接 return，不执行 preventDefault，允许面板丝滑滚动
-      }
-
-      // 主页面状态下：全屏控制
-      updateNDC(touch.clientX, touch.clientY);
-
-      // 如果你之前用了 preventDefault 防止主页面滚动，在这里加
-      // if (e.cancelable) e.preventDefault(); 
-    }, { passive: true });
-
-    // 手指按下
-    window.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      if (touch) updateBlurMask(touch.clientX, touch.clientY);
-    }, { passive: false });
 
     // 加载模糊控制
     const LOAD_BLUR = { blur: 17, tint: 'rgba(255, 255, 255, 0.05)', fadeDuration: 1.2, fadeDelay: 0.2 };
@@ -783,8 +760,7 @@
     }
     const toonGradient = makeToonGradient(TOON.steps);
 
-    // 鼠标输入
-    // 鼠标与触屏输入适配
+    // ★★★ 修改点：鼠标与触屏输入大一统整合到这里 ★★★
     const mouseNDC = { x: 0, y: 0 };
 
     function updateNDC(clientX, clientY) {
@@ -792,19 +768,52 @@
       mouseNDC.y = -(clientY / window.innerHeight) * 2 + 1;
     }
 
-    // 电脑端鼠标
-    window.addEventListener('mousemove', (e) => updateNDC(e.clientX, e.clientY));
+    // 电脑端鼠标（控制视差、眼球、毛玻璃）
+    window.addEventListener('mousemove', (e) => {
+      updateNDC(e.clientX, e.clientY);
+      updateBlurMask(e.clientX, e.clientY);
+    });
 
-    // 移动端手指滑动
-    window.addEventListener('touchmove', (e) => {
-      // ★ 如果右侧面板打开了，毛玻璃就不跟随手指了（因为面板把左边挡住了）
-      if (window.isOverviewMode) return; // 这里的 window.isOverviewMode 稍后在模块里挂载
-
+    // 移动端手指按下
+    window.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
-      if (touch) {
+      if (!touch) return;
+      updateNDC(touch.clientX, touch.clientY);
+      // 面板未打开时，控制毛玻璃
+      if (!window.isOverviewMode) updateBlurMask(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    // 移动端手指滑动（核心：区分面板内外）
+    window.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      // 判断手指是不是在右侧面板上
+      const inPanel = e.target.closest('#overview-panel');
+
+      if (inPanel) {
+        // 在面板里滑动：只转动眼球，不控制毛玻璃，绝不阻止面板滚动！
+        updateNDC(touch.clientX, touch.clientY);
+        return; 
+      }
+
+      // 在左侧 3D 区域滑动：
+      // 1. 同步控制视差、眼球、高光
+      updateNDC(touch.clientX, touch.clientY);
+      // 2. 面板没打开时，同步控制毛玻璃
+      if (!window.isOverviewMode) {
         updateBlurMask(touch.clientX, touch.clientY);
       }
-    }, { passive: true }); // 这里恢复 passive: true，不要拦截默认滚动
+    }, { passive: true });
+
+    // 手指离开屏幕时，如果面板没开，复位坐标
+    window.addEventListener('touchend', (e) => {
+      if (!window.isOverviewMode) {
+        mouseNDC.x = 0;
+        mouseNDC.y = 0;
+      }
+    });
+
     // 高光小灯跟随
     const _highlightTarget = new THREE.Vector3();
     let _highlightInited = false;
@@ -845,7 +854,7 @@
     // ============================================================
     let isOverviewMode = false;
 
-    // ★ 把状态挂到 window 上，让外层的原生 JS 也能知道面板开没开
+    // 挂载到 window 让外层的原生 JS 也能知道面板开没开
     Object.defineProperty(window, 'isOverviewMode', {
       get() { return isOverviewMode; }
     });
@@ -853,7 +862,6 @@
     const parallaxStrength = 0.07; // 鼠标视差强度
     const camOriginPos = new THREE.Vector3(VIEW.position.x, VIEW.position.y, VIEW.position.z);
 
-    // ★ 严格使用你之前调好的右侧相机参数
     const OVERVIEW_CAM = {
       targetPos: new THREE.Vector3(0.25, 1.28, 0.45),
       lookAt: new THREE.Vector3(0.15, 1.32, 0),
