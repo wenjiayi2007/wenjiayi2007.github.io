@@ -145,8 +145,13 @@
     }
 
     @keyframes recordRotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .record-player .tip-text {
@@ -219,9 +224,19 @@
       opacity: 0;
     }
 
-    .social-btn:hover { transform: translate(4px, -3px); }
-    .social-btn:hover::before { opacity: 0.6; transform: translate(-3px, 1.5px); }
-    .social-btn:hover::after { opacity: 0.25; transform: translate(-4px, 5px); }
+    .social-btn:hover {
+      transform: translate(4px, -3px);
+    }
+
+    .social-btn:hover::before {
+      opacity: 0.6;
+      transform: translate(-3px, 1.5px);
+    }
+
+    .social-btn:hover::after {
+      opacity: 0.25;
+      transform: translate(-4px, 5px);
+    }
 
     /* ============================================================
        ★★★ 右侧入口与概览面板 UI ★★★
@@ -293,7 +308,9 @@
       transition: opacity 0.2s;
     }
 
-    #close-overview-btn:hover { opacity: 1; }
+    #close-overview-btn:hover {
+      opacity: 1;
+    }
 
     /* 滚动区域 */
     .timeline-scroll {
@@ -305,18 +322,25 @@
       mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
     }
 
-        /* 显示并自定义滚动条 */
+    /* 显示并自定义滚动条 */
     .timeline-scroll::-webkit-scrollbar {
       display: block;
-      width: 3px; /* 滚动条的宽度 */
+      width: 3px;
+      /* 滚动条的宽度 */
     }
+
     .timeline-scroll::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3); /* 滚动条的半透明颜色 */
-      border-radius: 4px; /* 圆角 */
+      background: rgba(255, 255, 255, 0.3);
+      /* 滚动条的半透明颜色 */
+      border-radius: 4px;
+      /* 圆角 */
     }
+
     .timeline-scroll::-webkit-scrollbar-track {
-      background: transparent; /* 滚动条轨道的背景透明 */
+      background: transparent;
+      /* 滚动条轨道的背景透明 */
     }
+
     /* 兼容 Firefox */
     .timeline-scroll {
       scrollbar-width: thin;
@@ -331,7 +355,9 @@
       margin-left: 10px;
     }
 
-    .timeline-item:last-child { border-left-color: transparent; }
+    .timeline-item:last-child {
+      border-left-color: transparent;
+    }
 
     .timeline-item::before {
       content: '';
@@ -728,11 +754,30 @@
     const toonGradient = makeToonGradient(TOON.steps);
 
     // 鼠标输入
+    // 鼠标与触屏输入适配
     const mouseNDC = { x: 0, y: 0 };
+
+    function updateMouseNDC(clientX, clientY) {
+      mouseNDC.x = (clientX / window.innerWidth) * 2 - 1;
+      mouseNDC.y = -(clientY / window.innerHeight) * 2 + 1;
+    }
+
+    // 1. 电脑端鼠标滑动
     window.addEventListener('mousemove', (e) => {
-      mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      updateMouseNDC(e.clientX, e.clientY);
     });
+
+    // 2. 手机端手指滑动与点击
+    window.addEventListener('touchmove', (e) => {
+      // 取第一个手指的坐标
+      const touch = e.touches[0];
+      if (touch) updateMouseNDC(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    window.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (touch) updateMouseNDC(touch.clientX, touch.clientY);
+    }, { passive: true });
 
     // 高光小灯跟随
     const _highlightTarget = new THREE.Vector3();
@@ -804,7 +849,7 @@
       // 主页面基础位置 + 鼠标视差
       const offsetX = THREE.MathUtils.clamp(mouseNDC.x * parallaxStrength, -0.07, 0.07);
       const offsetY = THREE.MathUtils.clamp(mouseNDC.y * parallaxStrength, -0.07, 0.07);
-      
+
       const homePos = new THREE.Vector3(
         camOriginPos.x + offsetX,
         camOriginPos.y + offsetY,
