@@ -806,14 +806,6 @@
       }
     }, { passive: true });
 
-    // 手指离开屏幕时，如果面板没开，复位坐标
-    window.addEventListener('touchend', (e) => {
-      if (!window.isOverviewMode) {
-        mouseNDC.x = 0;
-        mouseNDC.y = 0;
-      }
-    });
-
     // 高光小灯跟随
     const _highlightTarget = new THREE.Vector3();
     let _highlightInited = false;
