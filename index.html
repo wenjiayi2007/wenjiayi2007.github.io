@@ -44,6 +44,7 @@
 
     canvas {
       display: block;
+      touch-action: none;
     }
 
     /* 鼠标跟随毛玻璃 */
@@ -579,15 +580,23 @@
 
     // 移动端手指滑动（关键：必须加 passive: false 才能拦截滚动）
     window.addEventListener('touchmove', (e) => {
-      if (e.cancelable) {
-        e.preventDefault(); // ★ 阻止浏览器的默认滚动行为
-      }
       const touch = e.touches[0];
-      if (touch) {
-        // 刷新毛玻璃遮罩位置
-        updateBlurMask(touch.clientX, touch.clientY);
+      if (!touch) return;
+
+      // ★ 关键：如果在看面板，只更新手指的 NDC，用来转动眼球，绝不拦截滚动！
+      if (isOverviewMode) {
+        // 面板宽 530，左侧可视区域是 window.innerWidth - 530
+        // 手指在面板上滑动时，我们可以只让眼球看向手指方向
+        updateNDC(touch.clientX, touch.clientY);
+        return; // 直接 return，不执行 preventDefault，允许面板丝滑滚动
       }
-    }, { passive: false }); // ★ 这里必须是 false
+
+      // 主页面状态下：全屏控制
+      updateNDC(touch.clientX, touch.clientY);
+
+      // 如果你之前用了 preventDefault 防止主页面滚动，在这里加
+      // if (e.cancelable) e.preventDefault(); 
+    }, { passive: true });
 
     // 手指按下
     window.addEventListener('touchstart', (e) => {
@@ -788,16 +797,14 @@
 
     // 移动端手指滑动
     window.addEventListener('touchmove', (e) => {
+      // ★ 如果右侧面板打开了，毛玻璃就不跟随手指了（因为面板把左边挡住了）
+      if (window.isOverviewMode) return; // 这里的 window.isOverviewMode 稍后在模块里挂载
+
       const touch = e.touches[0];
       if (touch) {
-        // 同步更新视线和 3D 视差
-        updateNDC(touch.clientX, touch.clientY);
-
-        // 顺便把防止滚动也写上，双重保险
-        if (e.cancelable) e.preventDefault();
+        updateBlurMask(touch.clientX, touch.clientY);
       }
-    }, { passive: false });
-
+    }, { passive: true }); // 这里恢复 passive: true，不要拦截默认滚动
     // 高光小灯跟随
     const _highlightTarget = new THREE.Vector3();
     let _highlightInited = false;
@@ -837,6 +844,11 @@
     // ★★★ 状态机与曲线运镜配置（右侧专属） ★★★
     // ============================================================
     let isOverviewMode = false;
+
+    // ★ 把状态挂到 window 上，让外层的原生 JS 也能知道面板开没开
+    Object.defineProperty(window, 'isOverviewMode', {
+      get() { return isOverviewMode; }
+    });
 
     const parallaxStrength = 0.07; // 鼠标视差强度
     const camOriginPos = new THREE.Vector3(VIEW.position.x, VIEW.position.y, VIEW.position.z);
