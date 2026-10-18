@@ -39,6 +39,7 @@
       background-attachment: fixed;
       background-size: cover;
       cursor: default;
+      touch-action: none;
     }
 
     canvas {
@@ -572,20 +573,27 @@
       blurLayer.style.webkitMaskImage = mask;
     }
     updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
-        // 电脑端鼠标
+    // 电脑端鼠标
+    // 电脑端
     window.addEventListener('mousemove', (e) => updateBlurMask(e.clientX, e.clientY));
 
-    // 移动端手指滑动
+    // 移动端手指滑动（关键：必须加 passive: false 才能拦截滚动）
     window.addEventListener('touchmove', (e) => {
+      if (e.cancelable) {
+        e.preventDefault(); // ★ 阻止浏览器的默认滚动行为
+      }
       const touch = e.touches[0];
-      if (touch) updateBlurMask(touch.clientX, touch.clientY);
-    }, { passive: true });
-    
-    // 移动端手指按下（点按也能触发）
+      if (touch) {
+        // 刷新毛玻璃遮罩位置
+        updateBlurMask(touch.clientX, touch.clientY);
+      }
+    }, { passive: false }); // ★ 这里必须是 false
+
+    // 手指按下
     window.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       if (touch) updateBlurMask(touch.clientX, touch.clientY);
-    }, { passive: true });
+    }, { passive: false });
 
     // 加载模糊控制
     const LOAD_BLUR = { blur: 17, tint: 'rgba(255, 255, 255, 0.05)', fadeDuration: 1.2, fadeDelay: 0.2 };
@@ -770,27 +778,25 @@
     // 鼠标与触屏输入适配
     const mouseNDC = { x: 0, y: 0 };
 
-    function updateMouseNDC(clientX, clientY) {
+    function updateNDC(clientX, clientY) {
       mouseNDC.x = (clientX / window.innerWidth) * 2 - 1;
       mouseNDC.y = -(clientY / window.innerHeight) * 2 + 1;
     }
 
-    // 1. 电脑端鼠标滑动
-    window.addEventListener('mousemove', (e) => {
-      updateMouseNDC(e.clientX, e.clientY);
-    });
+    // 电脑端鼠标
+    window.addEventListener('mousemove', (e) => updateNDC(e.clientX, e.clientY));
 
-    // 2. 手机端手指滑动与点击
+    // 移动端手指滑动
     window.addEventListener('touchmove', (e) => {
-      // 取第一个手指的坐标
       const touch = e.touches[0];
-      if (touch) updateMouseNDC(touch.clientX, touch.clientY);
-    }, { passive: true });
+      if (touch) {
+        // 同步更新视线和 3D 视差
+        updateNDC(touch.clientX, touch.clientY);
 
-    window.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      if (touch) updateMouseNDC(touch.clientX, touch.clientY);
-    }, { passive: true });
+        // 顺便把防止滚动也写上，双重保险
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
 
     // 高光小灯跟随
     const _highlightTarget = new THREE.Vector3();
