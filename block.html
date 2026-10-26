@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js 全局光照与自由视角</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #151515;
+        }
+    </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+        // --- 1. 初始化场景、相机、渲染器 ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x151515); 
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(3, 2, 4);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // 开启高级物理渲染配置
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        
+        // 开启阴影渲染
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+        
+        document.body.appendChild(renderer.domElement);
+
+        // --- 2. 全局光照核心：环境贴图 (Environment Map) ---
+        // 使用 RoomEnvironment 生成一个类似室内摄影棚的环境，提供极其逼真的全局漫反射
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        pmremGenerator.compileEquirectangularShader();
+        const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+        scene.environment = envTexture; // 全局环境光，任何材质都会受此影响
+
+        // --- 3. 基础补充光 ---
+        // 半球光：天空色偏冷，地面色偏暖，模拟自然界的全局光照
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+        scene.add(hemiLight);
+
+        // 主光：固定在场景上方，负责投射阴影，增强立体感
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 10, 5);
+        dirLight.castShadow = true;
+        // 调整阴影相机范围，确保覆盖模型
+        dirLight.shadow.camera.top = 10;
+        dirLight.shadow.camera.bottom = -10;
+        dirLight.shadow.camera.left = -10;
+        dirLight.shadow.camera.right = 10;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        scene.add(dirLight);
+
+        // --- 4. 相机跟随光 (保留"转到哪都有光"的体验) ---
+        // 充当手电筒，从相机方向补光，避免模型背面死角彻底漆黑
+        const cameraLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        cameraLight.position.set(1, 1, 1);
+        camera.add(cameraLight);
+        
+        // 将相机加入场景，让挂在相机上的灯光生效
+        scene.add(camera);
+
+        // --- 5. 轨道控制器 ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = true;
+        controls.maxPolarAngle = Math.PI;
+        controls.minDistance = 0.5;
+        controls.maxDistance = 20;
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        // --- 6. 加载模型 ---
+        const loader = new GLTFLoader();
+
+        loader.load(
+            './block.glb',
+            (gltf) => {
+                const model = gltf.scene;
+
+                // 允许模型投射和接收阴影
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+
+                // 计算包围盒，居中并调整相机距离
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+
+                model.position.x -= center.x;
+                model.position.y -= center.y;
+                model.position.z -= center.z;
+
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const distance = maxDim * 1.5;
+
+                camera.position.set(distance * 0.7, distance * 0.5, distance);
+                controls.target.set(0, 0, 0);
+                controls.minDistance = maxDim * 0.8;
+                controls.maxDistance = maxDim * 5;
+                controls.update();
+
+                scene.add(model);
+            },
+            undefined, 
+            (error) => {
+                console.error('模型加载失败:', error);
+            }
+        );
+
+        // --- 7. 响应窗口大小变化 ---
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- 8. 动画循环 ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

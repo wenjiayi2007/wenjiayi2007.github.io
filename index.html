@@ -323,7 +323,7 @@
       -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
       mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
       /* ★★★ 修改点：加上 iOS 惯性滚动，让平板更丝滑 ★★★ */
-      -webkit-overflow-scrolling: touch; 
+      -webkit-overflow-scrolling: touch;
     }
 
     /* 显示并自定义滚动条 */
@@ -476,6 +476,15 @@
           </div>
         </div>
         <div class="timeline-item">
+          <div class="timeline-date">2026-10-24</div>
+          <div class="timeline-content">
+            <h3>
+              <a href="block.html" target="_blank" style="color: #FFFFFF; text-decoration: none;">《光启》</a>
+            </h3>
+            <p></p>
+          </div>
+        </div>
+        <div class="timeline-item">
           <div class="timeline-date">2026-10-13</div>
           <div class="timeline-content">
             <h3>GAMES202-高质量实时渲染</h3>
@@ -575,7 +584,7 @@
       blurLayer.style.webkitMaskImage = mask;
     }
     updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
-    
+
     // ★★★ 修改点：把这里的触摸事件全部干掉，只保留电脑端鼠标 ★★★
     // 电脑端
     window.addEventListener('mousemove', (e) => updateBlurMask(e.clientX, e.clientY));
@@ -793,7 +802,7 @@
       if (inPanel) {
         // 在面板里滑动：只转动眼球，不控制毛玻璃，绝不阻止面板滚动！
         updateNDC(touch.clientX, touch.clientY);
-        return; 
+        return;
       }
 
       // 在左侧 3D 区域滑动：
