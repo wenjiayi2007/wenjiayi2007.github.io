@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>光启</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #151515;
-        }
+        body { margin: 0; overflow: hidden; background-color: #151515; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -24,110 +20,140 @@
 
     <script type="module">
         import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-        import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+        import { GLTFLoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
+        import { RoomEnvironment } from 'https://unpkg.com/three@0.128.0/examples/jsm/environments/RoomEnvironment.js';
 
-        // --- 1. 初始化场景、相机、渲染器 ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x151515); 
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(3, 2, 4);
+        
+        let theta = 0;  
+        let phi = Math.PI / 3; 
+        let targetDistance = 60;
+        let cameraDistance = 60; 
+        let targetTheta = 0;
+        let targetPhi = Math.PI / 3;
+
+        const sensitivityX = 0.002; 
+        const sensitivityY = 0.002; 
+
+        document.body.addEventListener('click', () => {
+            document.body.requestPointerLock();
+        });
+
+        document.addEventListener('mousemove', (event) => {
+            if (document.pointerLockElement === document.body) {
+                targetTheta -= event.movementX * sensitivityX;
+                targetPhi -= event.movementY * sensitivityY;
+                targetPhi = Math.max(0.1, Math.min(targetPhi, Math.PI - 0.1));
+            }
+        });
+
+        document.addEventListener('wheel', (event) => {
+            targetDistance += event.deltaY * 0.05;
+            targetDistance = Math.max(10, Math.min(targetDistance, 150));
+        });
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         
-        // 开启高级物理渲染配置
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.0;
-        
-        // 开启阴影渲染
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
         
         document.body.appendChild(renderer.domElement);
 
-        // --- 2. 全局光照核心：环境贴图 (Environment Map) ---
-        // 使用 RoomEnvironment 生成一个类似室内摄影棚的环境，提供极其逼真的全局漫反射
-        const pmremGenerator = new THREE.PMREMGenerator(renderer);
-        pmremGenerator.compileEquirectangularShader();
-        const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-        scene.environment = envTexture; // 全局环境光，任何材质都会受此影响
+        // ========================================================
+        // 【核心修改区】纯常数环境光 + 相机跟随探照灯（带阴影）
+        // ========================================================
 
-        // --- 3. 基础补充光 ---
-        // 半球光：天空色偏冷，地面色偏暖，模拟自然界的全局光照
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
-        scene.add(hemiLight);
+        // 1. 彻底废除固定光，改用纯常数环境光。
+        // 强度给 0.6，保证你看不到的地方（背光面）依然有均匀的亮度，且绝对不反光。
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); 
+        scene.add(ambientLight);
 
-        // 主光：固定在场景上方，负责投射阴影，增强立体感
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(5, 10, 5);
-        dirLight.castShadow = true;
-        // 调整阴影相机范围，确保覆盖模型
-        dirLight.shadow.camera.top = 10;
-        dirLight.shadow.camera.bottom = -10;
-        dirLight.shadow.camera.left = -10;
-        dirLight.shadow.camera.right = 10;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        scene.add(dirLight);
-
-        // --- 4. 相机跟随光 (保留"转到哪都有光"的体验) ---
-        // 充当手电筒，从相机方向补光，避免模型背面死角彻底漆黑
-        const cameraLight = new THREE.DirectionalLight(0xffffff, 0.4);
-        cameraLight.position.set(1, 1, 1);
-        camera.add(cameraLight);
+        // 2. 相机跟随光（主光源）：不仅跟着跑，还要负责投下真实的阴影
+        const cameraLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        cameraLight.position.set(10, 20, 10); 
+        cameraLight.castShadow = true; // 开启阴影！
         
-        // 将相机加入场景，让挂在相机上的灯光生效
+        // 配置阴影相机范围（确保能覆盖你的房子）
+        cameraLight.shadow.camera.top = 50;
+        cameraLight.shadow.camera.bottom = -50;
+        cameraLight.shadow.camera.left = -50;
+        cameraLight.shadow.camera.right = 50;
+        cameraLight.shadow.mapSize.width = 2048;
+        cameraLight.shadow.mapSize.height = 2048;
+        cameraLight.shadow.bias = -0.001; 
+        
+        camera.add(cameraLight);
+
+        // 3. （可选）相机上的微弱补光，保证极暗角落能看清，不带阴影
+        const cameraFillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        cameraFillLight.position.set(-10, 10, -10);
+        camera.add(cameraFillLight);
+
         scene.add(camera);
 
-        // --- 5. 轨道控制器 ---
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.screenSpacePanning = true;
-        controls.maxPolarAngle = Math.PI;
-        controls.minDistance = 0.5;
-        controls.maxDistance = 20;
-        controls.target.set(0, 0, 0);
-        controls.update();
-
-        // --- 6. 加载模型 ---
+        // --- 加载模型 ---
         const loader = new GLTFLoader();
+        const clock = new THREE.Clock(); 
+        const doorsToRotate = [];
 
         loader.load(
             './block.glb',
             (gltf) => {
                 const model = gltf.scene;
 
-                // 允许模型投射和接收阴影
                 model.traverse((child) => {
                     if (child.isMesh) {
                         child.castShadow = true;
                         child.receiveShadow = true;
+
+                        const materials = Array.isArray(child.material) ? child.material : [child.material];
+                        
+                        materials.forEach(mat => {
+                            mat.side = THREE.DoubleSide;
+                            mat.polygonOffset = true;
+                            mat.polygonOffsetFactor = 1;
+                            mat.polygonOffsetUnits = 1;
+
+                            if (mat.transparent) {
+                                if (child.name.includes('玻璃') || mat.name.includes('glass')) {
+                                    mat.transparent = true;  
+                                    mat.alphaTest = 0;
+                                    mat.depthWrite = false;  
+                                    child.renderOrder = 3;   
+                                } else {
+                                    mat.transparent = false; 
+                                    mat.alphaTest = 0.5;     
+                                    mat.depthWrite = true;   
+                                    child.renderOrder = 2;   
+                                }
+                            } else {
+                                child.renderOrder = 0; 
+                            }
+                        });
+                    }
+                    
+                    if (child.name === '门南' || child.name === '门北') {
+                        if (child.animations && child.animations.length > 0) {
+                            child.animations = [];
+                        }
+                        doorsToRotate.push(child);
                     }
                 });
 
-                // 计算包围盒，居中并调整相机距离
                 const box = new THREE.Box3().setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-
+                
                 model.position.x -= center.x;
                 model.position.y -= center.y;
                 model.position.z -= center.z;
-
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const distance = maxDim * 1.5;
-
-                camera.position.set(distance * 0.7, distance * 0.5, distance);
-                controls.target.set(0, 0, 0);
-                controls.minDistance = maxDim * 0.8;
-                controls.maxDistance = maxDim * 5;
-                controls.update();
 
                 scene.add(model);
             },
@@ -137,7 +163,6 @@
             }
         );
 
-        // --- 7. 响应窗口大小变化 ---
         window.addEventListener('resize', onWindowResize, false);
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -145,10 +170,27 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // --- 8. 动画循环 ---
         function animate() {
             requestAnimationFrame(animate);
-            controls.update();
+            const delta = clock.getDelta(); 
+            
+            const doorRotationSpeed = 0.8; 
+            if (doorsToRotate.length > 0) {
+                doorsToRotate.forEach(door => {
+                    door.rotation.y += doorRotationSpeed * delta;
+                });
+            }
+
+            theta += (targetTheta - theta) * 0.1;
+            phi += (targetPhi - phi) * 0.1;
+            cameraDistance += (targetDistance - cameraDistance) * 0.1;
+
+            camera.position.x = cameraDistance * Math.sin(phi) * Math.sin(theta);
+            camera.position.y = cameraDistance * Math.cos(phi);
+            camera.position.z = cameraDistance * Math.sin(phi) * Math.cos(theta);
+
+            camera.lookAt(0, 0, 0);
+
             renderer.render(scene, camera);
         }
 
