@@ -21,10 +21,12 @@
     <script type="module">
         import * as THREE from 'three';
         import { GLTFLoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
-        import { RoomEnvironment } from 'https://unpkg.com/three@0.128.0/examples/jsm/environments/RoomEnvironment.js';
 
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x151515); 
+        
+        // 【核心1】绝对不加载环境贴图（删除了 RoomEnvironment），防止假反光
+        scene.environment = null; 
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         
@@ -68,20 +70,18 @@
         document.body.appendChild(renderer.domElement);
 
         // ========================================================
-        // 【核心修改区】纯常数环境光 + 相机跟随探照灯（带阴影）
+        // 【核心2】纯正的常数环境光（无方向，不产生高光）
         // ========================================================
-
-        // 1. 彻底废除固定光，改用纯常数环境光。
-        // 强度给 0.6，保证你看不到的地方（背光面）依然有均匀的亮度，且绝对不反光。
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); 
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); 
         scene.add(ambientLight);
 
-        // 2. 相机跟随光（主光源）：不仅跟着跑，还要负责投下真实的阴影
-        const cameraLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        cameraLight.position.set(10, 20, 10); 
-        cameraLight.castShadow = true; // 开启阴影！
+        // ========================================================
+        // 【核心3】相机跟随光（唯一的高光来源）
+        // ========================================================
+        const cameraLight = new THREE.DirectionalLight(0xffffff, 1.0);
+        cameraLight.position.set(5, 10, 5); 
+        cameraLight.castShadow = true; 
         
-        // 配置阴影相机范围（确保能覆盖你的房子）
         cameraLight.shadow.camera.top = 50;
         cameraLight.shadow.camera.bottom = -50;
         cameraLight.shadow.camera.left = -50;
@@ -91,12 +91,6 @@
         cameraLight.shadow.bias = -0.001; 
         
         camera.add(cameraLight);
-
-        // 3. （可选）相机上的微弱补光，保证极暗角落能看清，不带阴影
-        const cameraFillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        cameraFillLight.position.set(-10, 10, -10);
-        camera.add(cameraFillLight);
-
         scene.add(camera);
 
         // --- 加载模型 ---
@@ -121,6 +115,9 @@
                             mat.polygonOffset = true;
                             mat.polygonOffsetFactor = 1;
                             mat.polygonOffsetUnits = 1;
+
+                            // 【核心4】恢复玻璃原本的光滑度，保留它的高光
+                            // 我们不再去改 roughness 和 metalness，让它在探照灯下自然反射出唯一的高光
 
                             if (mat.transparent) {
                                 if (child.name.includes('玻璃') || mat.name.includes('glass')) {
