@@ -198,7 +198,7 @@
       position: fixed;
       right: 0;
       top: 0;
-      width: 50%;
+      width: 70%;
       height: 100%;
       z-index: 20;
       background: linear-gradient(to left, rgba(20, 22, 30, 0.5) 0%, rgba(20, 22, 30, 0) 100%);
@@ -216,6 +216,18 @@
       transform: translateX(0);
     }
 
+    .header-divider {
+      /* 👇 线的高度和颜色 👇 */
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+
+      /* 👇 线的宽度：比如 80%，或者你想固定成 300px 也行 👇 */
+      width: 50%;
+
+      /* 👇 左右居中，或者改左边的 margin 让它靠左 👇 */
+      margin: -3.5% 10% 3.5% 50%;
+    }
+
     .overview-header {
       display: flex;
       justify-content: space-between;
@@ -225,7 +237,6 @@
       letter-spacing: 2px;
       font-weight: bold;
       margin-bottom: 30px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       padding-bottom: 15px;
     }
 
@@ -234,7 +245,7 @@
       cursor: pointer;
       opacity: 0.7;
       transition: opacity 0.2s;
-      margin-left: 20%;
+      margin-left: 50%;
     }
 
     #close-overview-btn:hover {
@@ -349,7 +360,7 @@
 
     #overview-panel .overview-header span {
       margin-right: 3%;
-      padding-right: 5%;
+      padding-right: 3%;
     }
   </style>
 </head>
@@ -372,6 +383,7 @@
       <span>TIMELINE</span>
       <div id="close-overview-btn">&times; 关闭</div>
     </div>
+    <div class="header-divider"></div>
     <div class="timeline-scroll">
       <div class="timeline-track">
         <div class="timeline-item">
@@ -662,7 +674,36 @@
       e.stopPropagation();
       closeOverview();
     });
+    // ============================================================
+    // ★★★ 移动端：在面板上向右滑动关闭面板 ★★★
+    // ============================================================
+    const overviewPanel = document.getElementById('overview-panel');
+    let touchStartX = 0;
+    let isSwiping = false;
 
+    overviewPanel.addEventListener('touchstart', (e) => {
+      if (!isOverviewMode) return;
+      touchStartX = e.touches[0].clientX;
+      isSwiping = true;
+    }, { passive: true });
+
+    overviewPanel.addEventListener('touchmove', (e) => {
+      if (!isSwiping || !isOverviewMode) return;
+
+      const touchCurrentX = e.touches[0].clientX;
+      const swipeDistance = touchCurrentX - touchStartX;
+
+      // 如果向右滑动的距离超过 80 像素，直接关闭
+      if (swipeDistance > 80) {
+        isSwiping = false;
+        closeOverview();
+      }
+    }, { passive: true });
+
+    overviewPanel.addEventListener('touchend', () => {
+      isSwiping = false;
+    }, { passive: true });
+    // ============================================================
     document.addEventListener('click', (e) => {
       if (!isOverviewMode) return;
       if (e.target.closest('#overview-panel') || e.target.closest('#enter-overview-btn')) return;
