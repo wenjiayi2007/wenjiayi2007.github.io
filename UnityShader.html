@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《Unity Shader入门精要》</title>
+    <style>
+        /* ================= 基础页面样式 ================= */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-top: 30px;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #2c3e50;
+            border-left: 4px solid #0066cc;
+            padding-left: 12px;
+        }
+
+        p {
+            margin: 15px 0;
+        }
+
+        /* ================= 导航栏 ================= */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: transparent;
+            padding: 20px 30px 10px 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        /* 左侧和右侧的容器 */
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 左上角返回主页按钮 */
+        .back-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #333;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: 0.25s ease;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .back-btn:hover {
+            transform: translate(4px, -3px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .back-btn::before,
+        .back-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            transition: 0.25s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .back-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
+
+        /* ================= 正文盒子 ================= */
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px 60px 20px;
+        }
+
+        /* ================= 折叠面板样式 ================= */
+        .collapse-wrap {
+            margin-bottom: 50px;
+        }
+
+        .collapse-title {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .collapse-title .arrow {
+            transition: transform 0.2s ease;
+        }
+
+        .collapse-title.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+
+        .collapse-body {
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            /* 👇 给一个极大的兜底高度，保证展开后无论代码多长都不会被截断 */
+            max-height: 50000px;
+        }
+
+        /* 👇 默认关闭状态 */
+        .collapse-body.collapsed {
+            max-height: 0 !important;
+        }
+
+        /* ================= 右下角常驻悬浮按钮 ================= */
+        .top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #333;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: 0.25s ease;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        .top-btn:hover {
+            transform: translate(4px, -3px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .top-btn::before,
+        .top-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            transition: 0.25s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .top-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .top-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
+
+        /* ================= 代码块与提示框样式 ================= */
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            font-family: "Fira Code", Consolas, Monaco, monospace;
+            line-height: 1.6;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部锚点 -->
+    <div id="top-anchor"></div>
+
+    <div class="sticky-header">
+        <!-- 左侧盒子：放返回主页 -->
+        <div class="header-left">
+            <a href="index.html" class="back-btn">
+                返回主页
+            </a>
+        </div>
+
+        <!-- 右侧盒子：以后想加多少按钮，就在这里写多少个 <a> 标签 -->
+        <div class="header-right">
+            <a href="block.html" class="back-btn">
+                光启
+            </a>
+            <a href="GAMES101.html" class="back-btn">
+                GAMES101
+            </a>
+        </div>
+    </div>
+
+    <!-- 常驻右下角“回到顶部”按钮 -->
+    <a class="top-btn" id="topBtn">↑ 回到顶部 ↑</a>
+
+    <div class="main-content">
+        <h1>《Unity Shader入门精要》</h1>
+
+        <!-- ========== HW1 ========== -->
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="1">
+                📌 Chapter5-开始学习 Unity Shader
+                <span class="arrow">▼</span>
+            </h2>
+            <!-- 注意这里加上了 collapsed 类，默认折叠 -->
+            <div class="collapse-body collapsed">
+                <img src="Chapter5.png" alt="预览" style="max-width:100%;">
+                <h3>1. 法线可视化 shader</h3>
+                <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter5-NewUnlitShader" {
+    SubShader {
+        Pass {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            // a2v：Application To Vertex，CPU传到顶点着色器的顶点数据
+            struct a2v {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            // v2f：Vertex To Fragment，顶点着色器输出，传给片元着色器
+            struct v2f {
+                float4 pos : SV_POSITION;
+                fixed3 color : COLOR0;
+            };
+
+            v2f vert(a2v v) {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                // 法线范围 [-1,1] → 映射到 [0,1]，才能作为颜色显示
+                o.color = v.normal * 0.5 + fixed3(0.5, 0.5, 0.5);
+                return o;
+            }
+
+            fixed4 frag(v2f i) : SV_Target {
+                return fixed4(i.color, 1.0);
+            }
+            ENDCG
+        }
+    }
+}</code></pre>
+                <h3>2. 使用属性</h3>
+                <pre><code>Shader "Unlit/Chapter5-NewUnlitShader 1"
+{
+    Properties
+    {
+        _Color ("Color Tint", Color) = (1.0,1.0,1.0,1.0) //1.0 全部改为 1 无影响
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" } //标记这是不透明物体,后期渲染有用，这里不影响
+        LOD 100  //这个 SubShader 只在 LOD 值≥100的时候启用，现在用的模型没有配置 LOD Group，永远用最高 LOD，删掉无影响
+
+        Pass
+        {
+            CGPROGRAM
+
+            #pragma vertex vert // 指定顶点着色器函数叫vert
+            #pragma fragment frag // 指定片元着色器函数叫frag
+
+            #include "UnityCG.cginc" //试了下把这行删掉无影响，原因可能是 UnityObjectToClipPos()，有一部分版本unity会把它的声明内置进引擎预编译环境，不是强制依赖 UnityCG.cginc
+
+            fixed4 _Color;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0; //这行删掉无影响，没有纹理
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 color : COLOR0; //COLOR0 也可替换为 TEXCOORD0
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.color = normalize(v.normal) * 0.5 + fixed3(0.5,0.5,0.5); //normalize 使向量归一化，在这里删掉没影响，原因是模型法线本身就是单位向量
+                return o;                                 // fixed3(0.5,0.5,0.5) 改为 0.5无影响
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 c = i.color;
+                c *= _Color.rgb;
+                return fixed4(c, 1.0); //这个{}内三行可以替换为 return fixed4(i.color * _Color.rgb, 1.0);
+            }
+            ENDCG
+        }
+    }
+    FallBack "Diffuse"
+}</code></pre>
+                <h3>3. 使用假彩色图像</h3>
+                <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter5-NewUnlitShader 2" {
+    SubShader {
+        Pass {
+            CGPROGRAM
+            
+            #pragma vertex vert // 指定顶点着色器函数叫vert
+            #pragma fragment frag // 指定片元着色器函数叫frag
+
+            #include "UnityCG.cginc" // 引入Unity内置cg工具库，UnityObjectToClipPos就在这里
+
+            // v2f：vertex to fragment，顶点着色器输出，传给片元着色器的数据结构体
+            struct v2f {
+                float4 pos : SV_POSITION; // 裁剪空间坐标，必须写SV_POSITION，光栅化要用
+                fixed4 color : COLOR0; // 输出颜色，传给片元
+                }; //结构体的花括号必须加;
+
+            // appdata_full：Unity内置结构体，包含顶点全部原始数据：位置、法线、切线、uv0、uv1等
+            v2f vert(appdata_full v) {
+                v2f o;
+
+                // 把模型本地顶点坐标，变换到相机裁剪空间（MVP变换）
+                o.pos = UnityObjectToClipPos(v.vertex);
+
+                // 1. 可视化法线：法线范围[-1,1] → 映射到[0,1]颜色
+                o.color = fixed4(v.normal * 0.5 + fixed3(0.5,0.5,0.5), 1.0); //1.0是补全Alpha通道的值
+
+                // 2. 可视化切线
+                o.color = fixed4(v.tangent * 0.5 + fixed3(0.5,0.5,0.5), 1.0);
+
+                // 3. 计算副法线，法线与切线叉乘，tangent.w是uv的方向（-1或+1），存储在tangent中方便计算，本身不属于切线，用于法线贴图
+                fixed3 binormal = cross(v.normal, v.tangent.xyz) * v.tangent.w; 
+
+                // 可视化副法线
+                o.color = fixed4(binormal * 0.5 + fixed3(0.5,0.5,0.5), 1.0);
+
+                // 4. 可视化第一套UV（texcoord / uv0），R=u，G=v，B=0
+                o.color = fixed4(v.texcoord.xy, 0.0, 1.0);
+
+                // 5. 可视化第二套UV（texcoord1 / uv1），R=u，G=v，B=0
+                o.color = fixed4(v.texcoord1.xy, 0.0, 1.0);
+
+                o.color = frac(v.texcoord); // frac()，取小数部分，R=u，G=v
+                if (any(saturate(v.texcoord) - v.texcoord)) { //saturate(x) 是 HLSL 内置函数，把每个分量的数值钳制在 [0, 1] 区间：小于0 → 0，大于1 → 1，[0,1] → 取值不变
+                    o.color.b = 0.5;                          //any(向量），只要向量里面，任意一个分量不是 0 → 返回 true；全部都是 0 → 返回 false
+                    }
+                o.color.a = 1.0;
+
+                o.color = frac(v.texcoord1);
+                if (any(saturate(v.texcoord1) - v.texcoord1)) {
+                    o.color.b = 0.5;
+                    }
+                o.color.a = 1.0;
+
+                return o; //局部变量o（v2f类型）的值作为函数vert（v2f类型）的返回值
+                }
+
+            fixed4 frag(v2f i) : SV_Target { // 光栅会对三个顶点的每一个成员做线性插值计算，生成三角形内部每一个像素对应的全新 v2f 实例，这个新实例名字叫i。
+                return i.color;
+                }
+                
+            ENDCG
+            }
+        }
+    }</code></pre>
+            </div>
+        </div>
+
+        <!-- ========== HW2 ========== -->
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="2">
+                📌 Chapter6-基础光照模型
+                <span class="arrow">▼</span>
+            </h2>
+            <div class="collapse-body collapsed">
+                <h3>1. 漫反射-逐顶点</h3>
+                <pre><code>Shader "Unlit/Chapter6-DiffuseVertexLevel"
+{
+    Properties
+    {
+        _Diffuse ("Diffuse", Color) = (1,1,1,1) //为了得到并且控制材质的漫反射颜色，我们首先在shader的properties语义块中声明了一个Color类型的属性，初始值设为白色
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags {"LightMode"="ForwardBase"} //内置管线前向渲染的基础 Pass。告诉 Unity：这个 Pass 用来算 主方向光 + 环境光，Unity 才会把 _LightColor0、_WorldSpaceLightPos0 这些光照变量注入进来。
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "Lighting.cginc" //引入 Unity 内置光照库，定义了 _LightColor0
+
+            fixed4 _Diffuse; //为了在shader中使用properties语义块中声明的属性，我们需要定义一个和该属性类型相匹配的变量
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                fixed3 color : COLOR;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                fixed3 worldNormal = normalize(mul(v.normal, (float3x3)unity_WorldToObject)); //当 mul 里面【向量放前面、矩阵放后面】，相当于：把输入的向量解释成行向量（等价于对列向量做一次转置）；逆矩阵保持原样不转置；行向量右乘逆矩阵，计算得到的结果，就是「逆转置矩阵左乘列向量」的结果再整体转置。但图形学的向量只是一组数字，只需要 xyz 分量，所以得到的结果不用再转置回去。
+                fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);                      //_World2Object 是（4×4）齐次变换矩阵，由于法线不受平移影响，所以取（3×3）
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal,worldLight));
+
+                o.color = ambient + diffuse;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                return fixed4(i.color, 1.0);
+            }
+
+            ENDCG
+        }
+    }
+    Fallback "Diffuse"
+}</code></pre>
+                <h3>2. 漫反射-逐片元</h3>
+                <pre><code>// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Unlit/Chapter6-DiffusePixelLevel"
+{
+    Properties
+    {
+        _Diffuse ("Diffuse", Color) = (1,1,1,1) //为了得到并且控制材质的漫反射颜色，我们首先在shader的properties语义块中声明了一个Color类型的属性，初始值设为白色
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags {"LightMode"="ForwardBase"} //内置管线前向渲染的基础 Pass。告诉 Unity：这个 Pass 用来算 主方向光 + 环境光，Unity 才会把 _LightColor0、_WorldSpaceLightPos0 这些光照变量注入进来。
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "Lighting.cginc" //引入 Unity 内置光照库，定义了 _LightColor0
+
+            fixed4 _Diffuse; //为了在shader中使用properties语义块中声明的属性，我们需要定义一个和该属性类型相匹配的变量
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                fixed3 worldNormal : TEXCOORD0;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal,worldLightDir));
+                fixed3 color = ambient + diffuse;
+                return fixed4(color, 1.0);
+            }
+
+            ENDCG
+        }
+    }
+    Fallback "Diffuse"
+}</code></pre>
+                <h3>3. 半兰伯特模型</h3>
+                <pre><code>// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Unlit/Chapter6-HalfLambert"
+{
+    Properties
+    {
+        _Diffuse ("Diffuse", Color) = (1,1,1,1) //为了得到并且控制材质的漫反射颜色，我们首先在shader的properties语义块中声明了一个Color类型的属性，初始值设为白色
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags {"LightMode"="ForwardBase"} //内置管线前向渲染的基础 Pass。告诉 Unity：这个 Pass 用来算 主方向光 + 环境光，Unity 才会把 _LightColor0、_WorldSpaceLightPos0 这些光照变量注入进来。
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "Lighting.cginc" //引入 Unity 内置光照库，定义了 _LightColor0
+
+            fixed4 _Diffuse; //为了在shader中使用properties语义块中声明的属性，我们需要定义一个和该属性类型相匹配的变量
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                fixed3 worldNormal : TEXCOORD0;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+
+                fixed halfLambert = dot(worldNormal, worldLightDir) * 0.5 + 0.5;
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * halfLambert;
+                fixed3 color = ambient + diffuse;
+                return fixed4(color, 1.0);
+            }
+
+            ENDCG
+        }
+    }
+    Fallback "Diffuse"
+}</code></pre>
+                <h3>4. 高光反射-逐顶点</h3>
+                <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter6-SpecularVertexLevel"
+{
+    Properties
+    {
+        _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
+        _Specular("Specular", Color) = (1, 1, 1, 1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                fixed3 color : COLOR;
+            };
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+                fixed3 worldNormal = normalize(mul(v.normal, (float3x3)unity_WorldToObject));
+                fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+                fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
+                fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, v.vertex).xyz); //_WorldSpaceCameraPos 是 Unity 内置的全局变量，自动取「当前用于渲染预览的那个相机」的世界坐标; 激活 Scene 窗口渲染用的是 Scene 内置的隐藏相机; 激活 Game 窗口渲染用 Hierarchy 里的 MainCamera
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
+
+                o.color = ambient + diffuse + specular;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                return fixed4(i.color, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}</code></pre>
+                <h3>5. 高光反射-逐片元</h3>
+                <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Unlit/Chapter6-SpecularPixelLevel"
+{
+    Properties
+    {
+        _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
+        _Specular("Specular", Color) = (1, 1, 1, 1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+            };
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+
+                fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
+
+                fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
+
+                return fixed4(ambient + diffuse + specular, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}</code></pre>
+                <h3>6. Blinn-Phong 光照模型</h3>
+                <pre><code>Shader "Unlit/Chapter6-BlinnPhong"
+{
+    Properties
+    {
+        _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
+        _Specular("Specular", Color) = (1, 1, 1, 1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+            };
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+
+                //o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+
+                fixed3 worldNormal = normalize(i.worldNormal);     //vert：只负责把法线转到世界空间； 光栅化插值：三角形三个顶点的数据，平滑插值到每一个像素，向量长度被改变； frag：拿到插值后的法线，先归一，再去点乘
+
+                //fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
+
+                //fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+
+                return fixed4(ambient + diffuse + specular, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="2">
+                📌 Chapter7-基础纹理
+                <span class="arrow">▼</span>
+            </h2>
+            <div class="collapse-body collapsed">
+                <h3></h3>
+            </div>
+        </div>
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="2">
+                📌 Chapter8-透明效果
+                <span class="arrow">▼</span>
+            </h2>
+            <div class="collapse-body collapsed">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const titles = document.querySelectorAll('.collapse-title');
+        const topBtn = document.getElementById('topBtn');
+
+        // 点击标题切换展开/折叠
+        titles.forEach((title) => {
+            title.addEventListener('click', () => {
+                // 给标题和下面的内容同时加上/移除 collapsed 类
+                title.classList.toggle('collapsed');
+                const body = title.nextElementSibling;
+                body.classList.toggle('collapsed');
+            });
+        });
+
+        // 点击回到顶部按钮
+        topBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+
+</html>

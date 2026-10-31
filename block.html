@@ -1,40 +1,135 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>光启</title>
     <style>
-        /* ========================================================
-           以后想改颜色，直接改这里！
-           ======================================================== */
+        /* ================= 导航栏 ================= */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: transparent;
+            padding: 20px 30px 10px 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        /* 左侧和右侧的容器 */
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 左上角返回主页按钮 */
+        .back-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: 0.25s ease;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .back-btn:hover {
+            transform: translate(4px, -3px);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .back-btn::before,
+        .back-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #ffffff;
+            border-radius: 999px;
+            transition: 0.25s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .back-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
+
         :root {
             /* 网页和场景的背景色 */
-            --bg-color: #151515;      
-            
+            --bg-color: #151515;
+
             /* 环境光（常数光，托底用，无高光） */
-            --ambient-color: #ffffff; 
-            --ambient-intensity: 0.8;  
-            
+            --ambient-color: #ffffff;
+            --ambient-intensity: 0.8;
+
             /* 相机光（跟随鼠标/手指的手电筒，产生唯一的高光） */
-            --camera-light-color: #fffdf0; 
+            --camera-light-color: #fffdf0;
             --camera-light-intensity: 1.0;
         }
 
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background-color: var(--bg-color); 
-            cursor: pointer; 
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            cursor: pointer;
             /* 禁止移动端长按选中文本 */
             -webkit-user-select: none;
             user-select: none;
             /* 禁止移动端默认的触摸滚动/缩放行为 */
-            touch-action: none; 
+            touch-action: none;
         }
     </style>
 </head>
+
 <body>
+    <!-- 顶部锚点 -->
+    <div id="top-anchor"></div>
+
+    <div class="sticky-header">
+        <!-- 左侧盒子：放返回主页 -->
+        <div class="header-left">
+            <a href="index.html" class="back-btn">
+                返回主页
+            </a>
+        </div>
+
+        <!-- 右侧盒子：以后想加多少按钮，就在这里写多少个 <a> 标签 -->
+        <div class="header-right">
+            <a href="UnityShader.html" class="back-btn">
+                Unity Shader
+            </a>
+            <a href="GAMES101.html" class="back-btn">
+                GAMES101
+            </a>
+        </div>
+    </div>
+
     <script type="importmap">
         {
             "imports": {
@@ -49,7 +144,7 @@
         import { GLTFLoader } from 'https://unpkg.com/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
 
         const scene = new THREE.Scene();
-        
+
         // 读取 CSS 变量
         const rootStyle = getComputedStyle(document.documentElement);
         const cssBgColor = rootStyle.getPropertyValue('--bg-color').trim();
@@ -58,28 +153,28 @@
         const cssCameraLightColor = rootStyle.getPropertyValue('--camera-light-color').trim();
         const cssCameraLightIntensity = parseFloat(rootStyle.getPropertyValue('--camera-light-intensity').trim());
 
-        scene.background = new THREE.Color(cssBgColor); 
-        scene.environment = null; 
+        scene.background = new THREE.Color(cssBgColor);
+        scene.environment = null;
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        
+
         // 初始相机坐标
         const INITIAL_CAMERA_X = -25;
         const INITIAL_CAMERA_Y = 30;
         const INITIAL_CAMERA_Z = 60;
 
-        let cameraDistance = Math.sqrt(INITIAL_CAMERA_X**2 + INITIAL_CAMERA_Y**2 + INITIAL_CAMERA_Z**2);
+        let cameraDistance = Math.sqrt(INITIAL_CAMERA_X ** 2 + INITIAL_CAMERA_Y ** 2 + INITIAL_CAMERA_Z ** 2);
         let targetDistance = cameraDistance;
 
-        let phi = Math.acos(INITIAL_CAMERA_Y / cameraDistance); 
+        let phi = Math.acos(INITIAL_CAMERA_Y / cameraDistance);
         let targetPhi = phi;
 
         let theta = Math.atan2(INITIAL_CAMERA_X, INITIAL_CAMERA_Z);
         let targetTheta = theta;
 
-        const sensitivityX = 0.002; 
-        const sensitivityY = 0.002; 
-        
+        const sensitivityX = 0.002;
+        const sensitivityY = 0.002;
+
         // 移动端灵敏度
         const touchSensitivityX = 0.005;
         const touchSensitivityY = 0.005;
@@ -121,7 +216,7 @@
 
         document.addEventListener('touchmove', (e) => {
             e.preventDefault(); // 阻止页面滚动
-            
+
             if (e.touches.length === 1) {
                 // 单指：计算滑动距离并旋转视角
                 const deltaX = e.touches[0].clientX - touchStart.x;
@@ -158,37 +253,37 @@
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        
+
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.0;
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
-        
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
         document.body.appendChild(renderer.domElement);
 
         // 光照
-        const ambientLight = new THREE.AmbientLight(cssAmbientColor, cssAmbientIntensity); 
+        const ambientLight = new THREE.AmbientLight(cssAmbientColor, cssAmbientIntensity);
         scene.add(ambientLight);
 
         const cameraLight = new THREE.DirectionalLight(cssCameraLightColor, cssCameraLightIntensity);
-        cameraLight.position.set(5, 10, 5); 
-        cameraLight.castShadow = true; 
-        
+        cameraLight.position.set(5, 10, 5);
+        cameraLight.castShadow = true;
+
         cameraLight.shadow.camera.top = 50;
         cameraLight.shadow.camera.bottom = -50;
         cameraLight.shadow.camera.left = -50;
         cameraLight.shadow.camera.right = 50;
         cameraLight.shadow.mapSize.width = 2048;
         cameraLight.shadow.mapSize.height = 2048;
-        cameraLight.shadow.bias = -0.001; 
-        
+        cameraLight.shadow.bias = -0.001;
+
         camera.add(cameraLight);
         scene.add(camera);
 
         // --- 加载模型 ---
         const loader = new GLTFLoader();
-        const clock = new THREE.Clock(); 
+        const clock = new THREE.Clock();
         const doorsToRotate = [];
 
         loader.load(
@@ -202,7 +297,7 @@
                         child.receiveShadow = true;
 
                         const materials = Array.isArray(child.material) ? child.material : [child.material];
-                        
+
                         materials.forEach(mat => {
                             mat.side = THREE.DoubleSide;
                             mat.polygonOffset = true;
@@ -211,22 +306,22 @@
 
                             if (mat.transparent) {
                                 if (child.name.includes('玻璃') || mat.name.includes('glass')) {
-                                    mat.transparent = true;  
+                                    mat.transparent = true;
                                     mat.alphaTest = 0;
-                                    mat.depthWrite = false;  
-                                    child.renderOrder = 3;   
+                                    mat.depthWrite = false;
+                                    child.renderOrder = 3;
                                 } else {
-                                    mat.transparent = false; 
-                                    mat.alphaTest = 0.5;     
-                                    mat.depthWrite = true;   
-                                    child.renderOrder = 2;   
+                                    mat.transparent = false;
+                                    mat.alphaTest = 0.5;
+                                    mat.depthWrite = true;
+                                    child.renderOrder = 2;
                                 }
                             } else {
-                                child.renderOrder = 0; 
+                                child.renderOrder = 0;
                             }
                         });
                     }
-                    
+
                     if (child.name === '门南' || child.name === '门北') {
                         if (child.animations && child.animations.length > 0) {
                             child.animations = [];
@@ -237,14 +332,14 @@
 
                 const box = new THREE.Box3().setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
-                
+
                 model.position.x -= center.x;
                 model.position.y -= center.y;
                 model.position.z -= center.z;
 
                 scene.add(model);
             },
-            undefined, 
+            undefined,
             (error) => {
                 console.error('模型加载失败:', error);
             }
@@ -259,9 +354,9 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            const delta = clock.getDelta(); 
-            
-            const doorRotationSpeed = 0.8; 
+            const delta = clock.getDelta();
+
+            const doorRotationSpeed = 0.8;
             if (doorsToRotate.length > 0) {
                 doorsToRotate.forEach(door => {
                     door.rotation.y += doorRotationSpeed * delta;
@@ -285,4 +380,5 @@
         animate();
     </script>
 </body>
+
 </html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMES101-现代计算机图形学入门</title>
+    <style>
+        /* ================= 基础页面样式 ================= */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-top: 30px;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #2c3e50;
+            border-left: 4px solid #0066cc;
+            padding-left: 12px;
+        }
+
+        p {
+            margin: 15px 0;
+        }
+
+        /* ================= 导航栏 ================= */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: transparent;
+            padding: 20px 30px 10px 30px;
+            z-index: 1000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        /* 左侧和右侧的容器 */
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* 左上角返回主页按钮 */
+        .back-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #333;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: 0.25s ease;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .back-btn:hover {
+            transform: translate(4px, -3px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .back-btn::before,
+        .back-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            transition: 0.25s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .back-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
+
+        /* ================= 正文盒子 ================= */
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 20px 60px 20px;
+        }
+
+        /* ================= 折叠面板样式 ================= */
+        .collapse-wrap {
+            margin-bottom: 50px;
+        }
+
+        .collapse-title {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .collapse-title .arrow {
+            transition: transform 0.2s ease;
+        }
+
+        .collapse-title.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+
+        .collapse-body {
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            /* 👇 给一个极大的兜底高度，保证展开后无论代码多长都不会被截断 */
+            max-height: 50000px; 
+        }
+
+        /* 👇 默认关闭状态 */
+        .collapse-body.collapsed {
+            max-height: 0 !important;
+        }
+
+        /* ================= 右下角常驻悬浮按钮 ================= */
+        .top-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #333;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: 0.25s ease;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        .top-btn:hover {
+            transform: translate(4px, -3px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .top-btn::before,
+        .top-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            transition: 0.25s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .top-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .top-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
+
+        /* ================= 代码块与提示框样式 ================= */
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            font-family: "Fira Code", Consolas, Monaco, monospace;
+            line-height: 1.6;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部锚点 -->
+    <div id="top-anchor"></div>
+
+    <div class="sticky-header">
+        <!-- 左侧盒子：放返回主页 -->
+        <div class="header-left">
+            <a href="index.html" class="back-btn">
+                返回主页
+            </a>
+        </div>
+
+        <!-- 右侧盒子：以后想加多少按钮，就在这里写多少个 <a> 标签 -->
+        <div class="header-right">
+            <a href="block.html" class="back-btn">
+                光启
+            </a>
+            <a href="UnityShader.html" class="back-btn">
+                Unity Shader
+            </a>
+        </div>
+    </div>
+
+    <!-- 常驻右下角“回到顶部”按钮 -->
+    <a class="top-btn" id="topBtn">↑ 回到顶部 ↑</a>
+
+    <div class="main-content">
+        <h1>GAMES101-现代计算机图形学入门</h1>
+
+        <!-- ========== HW1 ========== -->
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="1">
+                📌 Homework1
+                <span class="arrow">▼</span>
+            </h2>
+            <!-- 注意这里加上了 collapsed 类，默认折叠 -->
+            <div class="collapse-body collapsed">
+                <h3>1. 推导 视锥→立方体 变换矩阵</h3>
+                <img src="persp2ortho.jpg" style="width: 100%; display: block; margin: 20px 0;">
+
+                <h3>2. 构建模型矩阵 M</h3>
+                <pre><code>Eigen::Matrix4f get_model_matrix(float rotation_angle)
+{
+    Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
+
+    // TODO: Implement this function
+    // Create the model matrix for rotating the triangle around the Z axis.
+    float rad = rotation_angle * MY_PI / 180.0f;
+    float c = cos(rad);
+    float s = sin(rad);
+
+    Eigen::Matrix4f rotation;
+    rotation << c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
+
+    model = rotation * model;
+    // Then return it.
+    return model;
+}</code></pre>
+                <h3>3. 构建透视投影矩阵 P</h3>
+                <pre><code>Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
+                                      float zNear, float zFar)
+{
+    // Students will implement this function
+
+    Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
+
+    // TODO: Implement this function
+    // Create the projection matrix for the given parameters.
+    float n = -zNear;
+    float f = -zFar;
+    float t = std::tan(eye_fov / 2 * MY_PI / 180) * std::abs(n);
+    float b = -t;
+    float r = t * aspect_ratio;
+    float l = -r;
+
+    Eigen::Matrix4f scale;
+    scale << 2/(r-l), 0, 0, 0, 0, 2/(t-b), 0, 0, 0, 0, 2/(n-f), 0, 0, 0, 0, 1;
+
+    Eigen::Matrix4f translate;
+    translate << 1, 0, 0, -(r+l)/2, 0, 1, 0, -(t+b)/2, 0, 0, 1, -(n+f)/2, 0, 0, 0, 1;
+
+    Eigen::Matrix4f ortho;
+    ortho = scale * translate;
+
+    Eigen::Matrix4f persp2ortho;
+    persp2ortho << n, 0, 0, 0, 0, n, 0, 0, 0, 0, n + f, -n * f, 0, 0, 1, 0;
+
+    projection = ortho * persp2ortho;
+    // Then return it.
+    return projection;
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- ========== HW2 ========== -->
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="2">
+                📌 Homework2
+                <span class="arrow">▼</span>
+            </h2>
+            <div class="collapse-body collapsed">
+                <h3></h3>
+            </div>
+        </div>
+
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="2">
+                📌 Homework3
+                <span class="arrow">▼</span>
+            </h2>
+            <div class="collapse-body collapsed">
+                <h3></h3>
+            </div>
+        </div>
+        <div class="collapse-wrap">
+            <h2 class="collapse-title collapsed" data-hw="2">
+                📌 Homework4
+                <span class="arrow">▼</span>
+            </h2>
+            <div class="collapse-body collapsed">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const titles = document.querySelectorAll('.collapse-title');
+        const topBtn = document.getElementById('topBtn');
+
+        // 点击标题切换展开/折叠
+        titles.forEach((title) => {
+            title.addEventListener('click', () => {
+                // 给标题和下面的内容同时加上/移除 collapsed 类
+                title.classList.toggle('collapsed');
+                const body = title.nextElementSibling;
+                body.classList.toggle('collapsed');
+            });
+        });
+
+        // 点击回到顶部按钮
+        topBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+
+</html>

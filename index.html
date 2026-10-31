@@ -10,15 +10,15 @@
   </script>
   <style>
     :root {
-      --bg-top: #d194a1;
-      --bg-bottom: #fccfd9;
+      --bg-top: #bccfff;
+      --bg-bottom: #d1deff;
       --light-key: #fcf0f0;
-      --light-fill: #aaccff;
-      --light-ambient: #ffcab1;
+      --light-fill: #ffffea;
+      --light-ambient: #ffecef;
       --outline: #532b2b;
       --material-fallback: #ffffff;
       --clear: #000000;
-      --blur-radius: 2px;
+      --blur-radius: 1.8px;
       --noise-opacity: 0.05;
       --saturation: 0.9999;
       --brightness: 1.02;
@@ -39,15 +39,12 @@
       background-attachment: fixed;
       background-size: cover;
       cursor: default;
-      /* ★★★ 修改点：删除了 touch-action: none，避免影响面板滚动 ★★★ */
     }
 
     canvas {
       display: block;
-      /* ★★★ 修改点：删除了 touch-action: none ★★★ */
     }
 
-    /* 鼠标跟随毛玻璃 */
     #blur-layer {
       position: fixed;
       inset: 0;
@@ -69,7 +66,6 @@
       background-size: 300px 300px;
     }
 
-    /* ★★★ 加载模糊层（初始全屏模糊） ★★★ */
     #load-blur-layer {
       position: fixed;
       inset: 0;
@@ -82,102 +78,36 @@
       opacity: 0;
     }
 
-    /* 序列帧 */
+    /* 保留你原本的 HTML 遮罩（哪怕你说不用了，先放着不碍事） */
     #sprite-layer {
       position: fixed;
       left: 50%;
       top: 50%;
       z-index: 10;
       pointer-events: none;
-      display: none;
-      will-change: transform;
+      transform: translate(-50%, -50%) translate(0px, 160px) scale(0.155);
     }
 
-    #sprite-canvas {
+    #signature-svg {
       display: block;
-      user-select: none;
-      -webkit-user-drag: none;
+      width: 1000px;
+      height: auto;
     }
 
-    /* ======黑胶唱片播放器====== */
-    .record-player {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 20;
-      cursor: pointer;
-      user-select: none;
-      width: 56px;
-      height: 56px;
-    }
-
-    .record {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      position: relative;
-      box-shadow: 2px 4px 13px rgba(0, 0, 0, 0.606);
-      animation: recordRotate 6s linear infinite;
-      animation-play-state: paused;
-      overflow: hidden;
-      background: transparent;
-    }
-
-    .record::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, #3a3434, #000000);
-    }
-
-    .record::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 42%;
-      height: 42%;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #3986e6, #f34b7d);
-    }
-
-    .record-player.playing .record {
-      animation-play-state: running;
-    }
-
-    @keyframes recordRotate {
-      from {
-        transform: rotate(0deg);
+    @keyframes flowRight {
+      0% {
+        background-position: 0% 50%;
       }
 
-      to {
-        transform: rotate(360deg);
+      100% {
+        background-position: 300% 50%;
       }
-    }
-
-    .record-player .tip-text {
-      position: absolute;
-      left: 64px;
-      top: 50px;
-      transform: translateY(-50%);
-      color: #ffe9e9e5;
-      font-size: 14px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.26);
-    }
-
-    .record-player:hover .tip-text {
-      opacity: 1;
     }
 
     /* 底部社交按钮 */
     .footer-group {
       position: absolute;
-      top: 580px;
+      top: 590px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -190,14 +120,14 @@
       display: inline-flex;
       align-items: center;
       gap: 1px;
-      padding: 5px 12px;
+      padding: 8px 17px;
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      color: #ffffff;
-      border: 2px solid #ffffff;
+      color: #380082;
+      border: 2px solid #380082;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: 14px;
       letter-spacing: 1px;
       text-decoration: none;
       transition: 0.25s ease;
@@ -220,7 +150,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      border: 2px solid #ffffff;
+      border: 2px solid #380082;
       border-radius: 999px;
       transition: 0.25s ease;
       opacity: 0;
@@ -240,22 +170,19 @@
       transform: translate(-4px, 5px);
     }
 
-    /* ============================================================
-       ★★★ 右侧入口与概览面板 UI ★★★
-       ============================================================ */
+    /* 右侧 UI */
     #enter-overview-btn {
       white-space: nowrap;
       position: fixed;
-      right: 40px;
+      right: 45px;
       top: 50%;
       transform: translateY(-50%);
       z-index: 20;
-      color: #f71e75;
-      font-family: ui-monospace, "SF Mono", Menlo, monospace;
-      font-size: 22px;
+      color: #380082;
+      font-family: ui-monospace, monospace;
+      font-size: 28px;
       letter-spacing: 3px;
       cursor: pointer;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       transition: opacity 0.4s ease, transform 0.4s ease;
       writing-mode: vertical-lr;
       opacity: 0.9;
@@ -267,7 +194,6 @@
       transform: translateY(-50%) translateX(-5px);
     }
 
-    /* 右侧概览面板 */
     #overview-panel {
       position: fixed;
       right: 0;
@@ -306,7 +232,7 @@
     #close-overview-btn {
       font-size: 14px;
       cursor: pointer;
-      opacity: 0.5;
+      opacity: 0.7;
       transition: opacity 0.2s;
     }
 
@@ -314,7 +240,6 @@
       opacity: 1;
     }
 
-    /* 滚动区域 */
     .timeline-scroll {
       flex: 1;
       overflow-y: auto;
@@ -322,30 +247,23 @@
       padding-top: 22px;
       -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
       mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 92%, transparent 100%);
-      /* ★★★ 修改点：加上 iOS 惯性滚动，让平板更丝滑 ★★★ */
       -webkit-overflow-scrolling: touch;
     }
 
-    /* 显示并自定义滚动条 */
     .timeline-scroll::-webkit-scrollbar {
       display: block;
       width: 3px;
-      /* 滚动条的宽度 */
     }
 
     .timeline-scroll::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.3);
-      /* 滚动条的半透明颜色 */
       border-radius: 4px;
-      /* 圆角 */
     }
 
     .timeline-scroll::-webkit-scrollbar-track {
       background: transparent;
-      /* 滚动条轨道的背景透明 */
     }
 
-    /* 兼容 Firefox */
     .timeline-scroll {
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
@@ -395,15 +313,11 @@
       line-height: 1.6;
     }
 
-    /* 隐藏逻辑 */
     body.in-overview #enter-overview-btn {
       opacity: 0;
       pointer-events: none;
     }
 
-    /* ============================================================
-       ★★★ 右侧面板专属：时间轴靠右，文字靠左 ★★★
-       ============================================================ */
     #overview-panel .timeline-item {
       border-left: none;
       padding-left: 0;
@@ -428,7 +342,6 @@
       text-align: right;
     }
 
-    /* 标题与关闭按钮对调位置 */
     #overview-panel .overview-header {
       flex-direction: row-reverse;
     }
@@ -444,28 +357,20 @@
   <div id="blur-layer"></div>
   <div id="load-blur-layer"></div>
 
+  <!-- 原有的 HTML 签名（如果不想要可以删，但我先留着） -->
   <div id="sprite-layer">
-    <canvas id="sprite-canvas"></canvas>
-  </div>
-
-  <!-- BGM -->
-  <div class="record-player" id="recordPlayer">
-    <div class="record">
-      <div class="center-dot"></div>
+    <div class="signature-mask">
+      <svg id="signature-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0.00 0.00 2560.00 839.00"></svg>
     </div>
-    <div class="tip-text">点击播放/暂停BGM</div>
   </div>
 
-  <!-- ★★★ 右侧入口文字 ★★★ -->
   <div id="enter-overview-btn">&darr; Learning Log / Timeline &darr;</div>
 
-  <!-- ★★★ 右侧概览页面（时间轴面板） ★★★ -->
   <div id="overview-panel">
     <div class="overview-header">
-      <span>探索轨迹</span>
-      <div id="close-overview-btn">&times; 关闭/点击左侧空白处</div>
+      <span>点击标题跳转</span>
+      <div id="close-overview-btn">&times; 关闭</div>
     </div>
-
     <div class="timeline-scroll">
       <div class="timeline-track">
         <div class="timeline-item">
@@ -478,51 +383,41 @@
         <div class="timeline-item">
           <div class="timeline-date">2026-10-24</div>
           <div class="timeline-content">
-            <h3>
-              <a href="block.html" target="_blank" style="color: #FFFFFF; text-decoration: none;">《光启》</a>
-            </h3>
-            <p></p>
+            <a href="block.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+              <h3>《光启》</h3>
+            </a>
           </div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">2026-10-13</div>
           <div class="timeline-content">
             <h3>GAMES202-高质量实时渲染</h3>
-            <p>
-              Shadows(and env)<br>
-              Global Illumination<br>
-              Physically-based Shading<br>
-              Real-time ray tracing
-            </p>
+            <p>Shadows(and env)<br>Global Illumination<br>Physically-based Shading<br>Real-time ray tracing</p>
           </div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">2026-09-30</div>
           <div class="timeline-content">
-            <h3>制作个人作品集展示网站</h3>
-            <p>
-              起初这只是一个简单的 2D 网页<br>
-              学习 GAMES202 的 shadows 部分时<br>
-              使用 Three.js + GLSL 在页面渲染 3D 模型
-            </p>
+            <h3>搭建个人静态网站</h3>
+            <p>起初这只是一个简单的 2D 网页<br>学习 GAMES202 的 shadows 部分时<br>想到可以使用 Three.js + GLSL 在页面渲染 3D 模型</p>
           </div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">2026-09-10</div>
           <div class="timeline-content">
-            <h3>《Unity Shader入门精要》</h3>
-            <p>编写 shader</p>
+            <a href="UnityShader.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+              <h3>《Unity Shader入门精要》</h3>
+            </a>
+            <p>以 Unity ShaderLab 为载体<br>把通用计算机渲染知识转化为在 Unity 引擎里<br>可编写、可调试、可复用的着色效果<br>熟悉 Unity 管线的工作规则与引擎提供的渲染基础设施</p>
           </div>
         </div>
         <div class="timeline-item">
-          <div class="timeline-date">2026-08-26</div>
+          <div class="timeline-date">2026-08-25</div>
           <div class="timeline-content">
-            <h3>GAMES101-现代计算机图形学入门</h3>
-            <p>Rasterization 光栅化<br>
-              Curves and Meshes 几何<br>
-              Ray Tracing 光线追踪<br>
-              Animation/Simulation 动画与模拟
-            </p>
+            <a href="GAMES101.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+              <h3>GAMES101-现代计算机图形学入门</h3>
+            </a>
+            <p>Rasterization 光栅化<br>Curves and Meshes 几何<br>Ray Tracing 光线追踪<br>Animation/Simulation 动画与模拟</p>
           </div>
         </div>
         <div class="timeline-item">
@@ -536,7 +431,6 @@
     </div>
   </div>
 
-  <!-- 底部按钮 -->
   <div class="footer-group">
     <a class="social-btn" href="mailto:wjy683280@qq.com">
       <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
@@ -554,27 +448,7 @@
     </a>
   </div>
 
-  <audio id="bgm" src="music.mp3" loop preload="auto"></audio>
-
   <script>
-    // BGM 控制
-    const player = document.getElementById("recordPlayer");
-    const bgm = document.getElementById("bgm");
-    let isPlaying = false;
-    player.onclick = () => {
-      if (!isPlaying) {
-        bgm.play().then(() => {
-          player.classList.add("playing");
-          isPlaying = true;
-        }).catch(e => console.log("BGM 播放被拦截或文件缺失"));
-      } else {
-        bgm.pause();
-        player.classList.remove("playing");
-        isPlaying = false;
-      }
-    }
-
-    // 毛玻璃遮罩跟随
     const BLUR = { enabled: true, innerRadius: 150, outerRadius: 400 };
     const blurLayer = document.getElementById('blur-layer');
     function updateBlurMask(clientX, clientY) {
@@ -584,12 +458,8 @@
       blurLayer.style.webkitMaskImage = mask;
     }
     updateBlurMask(window.innerWidth / 2, window.innerHeight / 2);
-
-    // ★★★ 修改点：把这里的触摸事件全部干掉，只保留电脑端鼠标 ★★★
-    // 电脑端
     window.addEventListener('mousemove', (e) => updateBlurMask(e.clientX, e.clientY));
 
-    // 加载模糊控制
     const LOAD_BLUR = { blur: 17, tint: 'rgba(255, 255, 255, 0.05)', fadeDuration: 1.2, fadeDelay: 0.2 };
     const loadBlurEl = document.getElementById('load-blur-layer');
     loadBlurEl.style.backdropFilter = `blur(${LOAD_BLUR.blur}px)`;
@@ -604,68 +474,7 @@
     }
     window.clearLoadBlur = clearLoadBlur;
 
-    // 序列帧预加载
-    window.__spriteDoneFlag = false;
-    window.__onSpriteDone = null;
-    const SPRITE = {
-      folder: './title_3D/', frameCount: 12, prefix: 'frame_', ext: '.png', pad: 5,
-      fps: 11, loop: false, offsetX: 0, offsetY: 160, scale: 0.155, fadeIn: 0.3
-    };
-    (function () {
-      const layer = document.getElementById('sprite-layer');
-      const canvas = document.getElementById('sprite-canvas');
-      const ctx = canvas.getContext('2d', { alpha: true });
-      layer.style.transform = `translate(-50%, -50%) translate(${SPRITE.offsetX}px, ${SPRITE.offsetY}px) scale(${SPRITE.scale})`;
-
-      const framePaths = [];
-      for (let i = 1; i <= SPRITE.frameCount; i++) {
-        framePaths.push(SPRITE.folder + SPRITE.prefix + String(i).padStart(SPRITE.pad, '0') + SPRITE.ext);
-      }
-      const bitmaps = [];
-      Promise.all(
-        framePaths.map(async (path) => {
-          const res = await fetch(path);
-          const blob = await res.blob();
-          return await createImageBitmap(blob);
-        })
-      ).then((results) => {
-        bitmaps.push(...results);
-        canvas.width = bitmaps[0].width;
-        canvas.height = bitmaps[0].height;
-        ctx.drawImage(bitmaps[0], 0, 0);
-        layer.style.display = 'block';
-        layer.style.opacity = '1';
-        startPlayback();
-      }).catch((err) => {
-        console.error('序列帧加载失败：', err);
-        window.__spriteDoneFlag = true;
-        if (window.__onSpriteDone) window.__onSpriteDone();
-      });
-
-      function startPlayback() {
-        let index = 0;
-        const interval = 1000 / SPRITE.fps;
-        let lastTime = performance.now();
-        function tick(now) {
-          requestAnimationFrame(tick);
-          const elapsed = now - lastTime;
-          if (elapsed < interval) return;
-          lastTime += interval;
-          index++;
-          if (index >= bitmaps.length) {
-            window.__spriteDoneFlag = true;
-            if (window.__onSpriteDone) window.__onSpriteDone();
-            return;
-          }
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(bitmaps[index], 0, 0);
-        }
-        requestAnimationFrame(tick);
-      }
-    })();
-
-    // 模型 Fetch
-    window.__modelPromise = fetch('./wjy1.glb').then(function (res) {
+    window.__modelPromise = fetch('./wjy3.glb').then(function (res) {
       if (!res.ok) throw new Error('模型请求失败');
       return res.arrayBuffer();
     });
@@ -685,39 +494,19 @@
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-    import { OutlineEffect } from 'three/addons/effects/OutlineEffect.js';
 
     const LOADING = { parseModelAt: 1100 };
-    const GAZE = {
-      enabled: true, leftBoneName: 'eyeL', rightBoneName: 'eyeR',
-      smooth: 0.80, mouseRange: 1.5, horizontalAxis: 'x', verticalAxis: 'y',
-      horizontalFlip: false, verticalFlip: false, horizontalScale: 1.5, verticalScale: 0.8,
-      moveAmount: 0.05, eyeSeparation: 0.15,
-    };
-    const HIGHLIGHT = {
-      enabled: true, color: '#ffeeee', intensity: 0.5, distance: 0.0005,
-      decay: 0, followDistance: 0.5, offsetX: 0.0, offsetY: 0.0, smooth: 0.25,
-    };
+    const GAZE = { enabled: true, leftBoneName: 'eyeLeft', rightBoneName: 'eyeRight', smooth: 0.80, mouseRange: 1.5, horizontalAxis: 'x', verticalAxis: 'y', horizontalFlip: false, verticalFlip: false, horizontalScale: 1.5, verticalScale: 0.8, moveAmount: 0.3, eyeSeparation: 0.15 };
+    const HIGHLIGHT = { enabled: true, color: '#ffeeee', intensity: 1, distance: 0.000000005, decay: 0, followDistance: 1.2, offsetX: 0.0, offsetY: 0.0, smooth: 0.5 };
 
     function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
-    const COLORS = {
-      keyLight: cssVar('--light-key'), fillLight: cssVar('--light-fill'),
-      ambientLight: cssVar('--light-ambient'), outline: cssVar('--outline'),
-      materialFallback: cssVar('--material-fallback'), clear: cssVar('--clear'),
-    };
-    function colorToRgb01(hex) { const c = new THREE.Color(hex); return [c.r, c.g, c.b]; }
+    const COLORS = { keyLight: cssVar('--light-key'), fillLight: cssVar('--light-fill'), ambientLight: cssVar('--light-ambient'), outline: cssVar('--outline'), materialFallback: cssVar('--material-fallback'), clear: cssVar('--clear') };
 
-    const VIEW = {
-      fov: 45, position: { x: 0, y: 1.39, z: 0.85 }, rotation: { x: 0, y: 5, z: 0 },
-      lookAtModel: false, lookAtHeight: 0.55,
-    };
-    const LIGHT = {
-      key: { position: { x: 0.8, y: 2, z: 5 }, intensity: 1.3, castShadow: true },
-      fill: { position: { x: 5, y: 3, z: -4 }, intensity: 1.2 },
-      ambient: { intensity: 2 }, envIntensity: 0.35, targetHeightRatio: 0.5,
-    };
+    const VIEW = { fov: 45, position: { x: 0, y: 1.39, z: 0.85 }, rotation: { x: 0, y: 5, z: 0 }, lookAtModel: false, lookAtHeight: 0.55 };
+    const LIGHT = { key: { position: { x: 0.8, y: 2, z: 5 }, intensity: 1.2, castShadow: true }, fill: { position: { x: 5, y: 3, z: -4 }, intensity: 1.2 }, ambient: { intensity: 2 }, envIntensity: 0.35, targetHeightRatio: 0.5 };
     const TOON = { steps: 3, outlineThickness: 0.0025, outlineAlpha: 1.0 };
 
+    // 1. 基础渲染器（纯默认，去掉了后处理特效）
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -726,11 +515,6 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.NoToneMapping;
     document.body.appendChild(renderer.domElement);
-
-    const effect = new OutlineEffect(renderer, {
-      defaultThickness: TOON.outlineThickness, defaultColor: colorToRgb01(COLORS.outline),
-      defaultAlpha: TOON.outlineAlpha, defaultKeepAlive: true, defaultVisible: true,
-    });
 
     const scene = new THREE.Scene();
     const pmrem = new THREE.PMREMGenerator(renderer);
@@ -768,53 +552,33 @@
     }
     const toonGradient = makeToonGradient(TOON.steps);
 
-    // ★★★ 修改点：鼠标与触屏输入大一统整合到这里 ★★★
     const mouseNDC = { x: 0, y: 0 };
-
     function updateNDC(clientX, clientY) {
       mouseNDC.x = (clientX / window.innerWidth) * 2 - 1;
       mouseNDC.y = -(clientY / window.innerHeight) * 2 + 1;
     }
 
-    // 电脑端鼠标（控制视差、眼球、毛玻璃）
     window.addEventListener('mousemove', (e) => {
       updateNDC(e.clientX, e.clientY);
       updateBlurMask(e.clientX, e.clientY);
     });
 
-    // 移动端手指按下
     window.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       if (!touch) return;
       updateNDC(touch.clientX, touch.clientY);
-      // 面板未打开时，控制毛玻璃
       if (!window.isOverviewMode) updateBlurMask(touch.clientX, touch.clientY);
     }, { passive: true });
 
-    // 移动端手指滑动（核心：区分面板内外）
     window.addEventListener('touchmove', (e) => {
       const touch = e.touches[0];
       if (!touch) return;
-
-      // 判断手指是不是在右侧面板上
       const inPanel = e.target.closest('#overview-panel');
-
-      if (inPanel) {
-        // 在面板里滑动：只转动眼球，不控制毛玻璃，绝不阻止面板滚动！
-        updateNDC(touch.clientX, touch.clientY);
-        return;
-      }
-
-      // 在左侧 3D 区域滑动：
-      // 1. 同步控制视差、眼球、高光
+      if (inPanel) { updateNDC(touch.clientX, touch.clientY); return; }
       updateNDC(touch.clientX, touch.clientY);
-      // 2. 面板没打开时，同步控制毛玻璃
-      if (!window.isOverviewMode) {
-        updateBlurMask(touch.clientX, touch.clientY);
-      }
+      if (!window.isOverviewMode) updateBlurMask(touch.clientX, touch.clientY);
     }, { passive: true });
 
-    // 高光小灯跟随
     const _highlightTarget = new THREE.Vector3();
     let _highlightInited = false;
     function updateHighlight() {
@@ -827,7 +591,6 @@
       else { highlightLight.position.lerp(targetPos, HIGHLIGHT.smooth); }
     }
 
-    // 眼球控制
     let leftBone = null, rightBone = null, leftPos0 = null, rightPos0 = null;
     let curMouseX = 0, curMouseY = 0;
     function setupGaze(model) {
@@ -841,72 +604,44 @@
       curMouseX += (mouseNDC.x - curMouseX) * GAZE.smooth;
       curMouseY += (mouseNDC.y - curMouseY) * GAZE.smooth;
       const mx = curMouseX * GAZE.mouseRange; const my = curMouseY * GAZE.mouseRange; const amt = GAZE.moveAmount;
-
       let ldx = (mx + GAZE.eyeSeparation) * GAZE.horizontalScale; let ldy = my * GAZE.verticalScale;
       leftBone.position.copy(leftPos0); leftBone.position[GAZE.horizontalAxis] += ldx * amt; leftBone.position[GAZE.verticalAxis] += ldy * amt;
-
       let rdx = (mx - GAZE.eyeSeparation) * GAZE.horizontalScale; let rdy = my * GAZE.verticalScale;
       rightBone.position.copy(rightPos0); rightBone.position[GAZE.horizontalAxis] += rdx * amt; rightBone.position[GAZE.verticalAxis] += rdy * amt;
     }
 
-    // ============================================================
-    // ★★★ 状态机与曲线运镜配置（右侧专属） ★★★
-    // ============================================================
     let isOverviewMode = false;
+    Object.defineProperty(window, 'isOverviewMode', { get() { return isOverviewMode; } });
 
-    // 挂载到 window 让外层的原生 JS 也能知道面板开没开
-    Object.defineProperty(window, 'isOverviewMode', {
-      get() { return isOverviewMode; }
-    });
-
-    const parallaxStrength = 0.07; // 鼠标视差强度
+    const parallaxStrength = 0.012;
     const camOriginPos = new THREE.Vector3(VIEW.position.x, VIEW.position.y, VIEW.position.z);
-
-    const OVERVIEW_CAM = {
-      targetPos: new THREE.Vector3(0.25, 1.28, 0.45),
-      lookAt: new THREE.Vector3(0.15, 1.32, 0),
-    };
+    const OVERVIEW_CAM = { targetPos: new THREE.Vector3(1.1, 1.3, 0.2), lookAt: new THREE.Vector3(0, 1.2, -1.4) };
 
     let cameraProgress = 0;
     const CAMERA_DURATION = 1.1;
 
-    function easeInOutCubic(x) {
-      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-    }
+    function easeInOutCubic(x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; }
 
     function updateCamera(deltaTime) {
       const targetProgress = isOverviewMode ? 1.0 : 0.0;
-
       if (cameraProgress < targetProgress) {
         cameraProgress = Math.min(targetProgress, cameraProgress + deltaTime / CAMERA_DURATION);
       } else if (cameraProgress > targetProgress) {
         cameraProgress = Math.max(targetProgress, cameraProgress - deltaTime / CAMERA_DURATION);
       }
-
       const smoothT = easeInOutCubic(cameraProgress);
-
-      // 主页面基础位置 + 鼠标视差
       const offsetX = THREE.MathUtils.clamp(mouseNDC.x * parallaxStrength, -0.07, 0.07);
       const offsetY = THREE.MathUtils.clamp(mouseNDC.y * parallaxStrength, -0.07, 0.07);
-
-      const homePos = new THREE.Vector3(
-        camOriginPos.x + offsetX,
-        camOriginPos.y + offsetY,
-        camOriginPos.z
-      );
+      const homePos = new THREE.Vector3(camOriginPos.x + offsetX, camOriginPos.y + offsetY, camOriginPos.z);
       const homeLookAt = new THREE.Vector3(0, 1.27, 0);
-
       camera.position.lerpVectors(homePos, OVERVIEW_CAM.targetPos, smoothT);
       const currentLookAt = new THREE.Vector3().lerpVectors(homeLookAt, OVERVIEW_CAM.lookAt, smoothT);
       camera.lookAt(currentLookAt);
     }
-    // ============================================================
 
-    // UI 元素获取
     const enterBtn = document.getElementById('enter-overview-btn');
     const closeBtn = document.getElementById('close-overview-btn');
 
-    // 关闭
     function closeOverview() {
       if (!isOverviewMode) return;
       isOverviewMode = false;
@@ -915,7 +650,6 @@
       HIGHLIGHT.enabled = true;
     }
 
-    // 打开
     enterBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       isOverviewMode = true;
@@ -923,45 +657,28 @@
       HIGHLIGHT.enabled = false;
     });
 
-    // 关闭按钮
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       closeOverview();
     });
 
-    // 全局点击关闭（点击左侧空白处）
     document.addEventListener('click', (e) => {
       if (!isOverviewMode) return;
-      if (e.target.closest('#overview-panel') || e.target.closest('#enter-overview-btn')) {
-        return;
-      }
+      if (e.target.closest('#overview-panel') || e.target.closest('#enter-overview-btn')) return;
       closeOverview();
     });
-
-    // ============================================================
 
     const clock = new THREE.Clock();
     let mixer = null;
 
+    // 2. 主渲染循环（去掉了 effect.render 造成的描边冲突）
     renderer.setAnimationLoop(() => {
       const delta = clock.getDelta();
       if (mixer) mixer.update(delta);
-
       updateCamera(delta);
       updateGaze();
       updateHighlight();
-      effect.render(scene, camera);
-    });
-
-    // 模型加载逻辑
-    await new Promise((resolve) => {
-      const check = () => {
-        if (window.__spriteDoneFlag) return resolve();
-        const elapsed = performance.now() - window.__pageStartTime;
-        if (elapsed >= LOADING.parseModelAt) return resolve();
-        requestAnimationFrame(check);
-      };
-      check();
+      renderer.render(scene, camera); // 纯原生渲染
     });
 
     const loader = new GLTFLoader();
@@ -969,6 +686,7 @@
     draco.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
     loader.setDRACOLoader(draco);
 
+    // 3. 加载小人模型（剥离了 OutlineEffect 的强加参数）
     try {
       const arrayBuffer = await window.__modelPromise;
       loader.parse(arrayBuffer, './', onModelLoaded, onLoadError);
@@ -981,6 +699,7 @@
 
     function onModelLoaded(gltf) {
       const model = gltf.scene;
+      model.scale.set(0.018, 0.018, 0.018);
       model.traverse((obj) => {
         if (!obj.isMesh) return;
         obj.castShadow = true; obj.receiveShadow = true; obj.frustumCulled = false;
@@ -992,10 +711,7 @@
             opacity: old.opacity !== undefined ? old.opacity : 1, side: old.side,
           });
           if (toon.map) toon.map.colorSpace = THREE.SRGBColorSpace;
-          toon.userData.outlineParameters = {
-            thickness: TOON.outlineThickness, color: colorToRgb01(COLORS.outline),
-            alpha: TOON.outlineAlpha, visible: true, keepAlive: true,
-          };
+          // 彻底移除了描边参数
           return toon;
         });
         obj.material = Array.isArray(obj.material) ? newMats : newMats[0];
@@ -1013,7 +729,7 @@
 
       const box0 = new THREE.Box3().setFromObject(model);
       const c0 = box0.getCenter(new THREE.Vector3());
-      model.position.x -= c0.x; model.position.z -= c0.z; model.position.y -= box0.min.y;
+      model.position.x -= c0.x; model.position.z -= c0.z; model.position.z -= 0.9; model.position.y -= box0.min.y; model.position.y += 0.45;
 
       const box = new THREE.Box3().setFromObject(model);
       const size = box.getSize(new THREE.Vector3());
@@ -1050,6 +766,37 @@
       setupGaze(model);
       if (window.clearLoadBlur) window.clearLoadBlur();
     }
+
+    // 4. 加载圆柱体（纯默认方式加载，不做任何后处理特效干预）
+    // 4. 加载圆柱体（并让它转起来）
+    loader.load('./wenjiayi.glb', (gltf) => {
+      const signatureCylinder = gltf.scene;
+
+      signatureCylinder.traverse((child) => {
+        if (child.isMesh) {
+          child.material.side = THREE.FrontSide;
+        }
+      });
+
+      // 调好的位置和大小
+      signatureCylinder.position.set(0, 1.62, -0.845);
+      signatureCylinder.rotation.x = -0.16;
+      signatureCylinder.scale.set(0.29, 0.29, 0.29);
+
+      scene.add(signatureCylinder);
+
+      // 👇 关键：在渲染循环中，让圆柱体绕着 Y 轴自转 👇
+      // 我们用 requestAnimationFrame，它会和你的场景渲染速度同步
+      function animateCylinder() {
+        requestAnimationFrame(animateCylinder);
+
+        // 0.01 是旋转速度，数字越大转得越快，负数就是反方向转
+        signatureCylinder.rotation.y -= 0.01;
+      }
+
+      // 启动旋转
+      animateCylinder();
+    });
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
