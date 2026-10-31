@@ -44,20 +44,19 @@
             padding: 20px 30px 10px 30px;
             z-index: 1000;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             box-sizing: border-box;
         }
 
-        /* 左侧和右侧的容器 */
-        .header-left,
-        .header-right {
+        /* 左侧返回按钮 */
+        .header-left {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        /* 左上角返回主页按钮 */
+        /* 公用按钮样式（返回主页、桌面端菜单） */
         .back-btn {
             position: relative;
             display: inline-flex;
@@ -108,6 +107,82 @@
             transform: translate(-4px, 5px);
         }
 
+        /* ================= 右侧菜单容器 ================= */
+        .header-right {
+            position: relative;
+        }
+
+        /* 导航链接列表（电脑端水平排布） */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ================= 汉堡菜单按钮 ================= */
+        .burger-menu {
+            display: none;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            padding: 0;
+            cursor: pointer;
+            position: relative;
+            /* 绝对定位的参考系 */
+            width: 40px;
+            height: 34px;
+            box-sizing: border-box;
+            z-index: 1001;
+            transition: background 0.25s ease;
+        }
+
+        /* 三条横线的基础样式 */
+        .burger-menu span {
+            display: block;
+            position: absolute;
+            left: 50%;
+            width: 18px;
+            height: 2px;
+            background-color: #333;
+            transform: translateX(-50%);
+            /* 完美水平居中 */
+            transition: transform 0.3s ease, opacity 0.3s ease, top 0.3s ease;
+        }
+
+        /* 默认三条线的位置 */
+        .burger-menu span:nth-child(1) {
+            top: 9px;
+        }
+
+        .burger-menu span:nth-child(2) {
+            top: 15px;
+        }
+
+        .burger-menu span:nth-child(3) {
+            top: 21px;
+        }
+
+        /* 👇 变形为叉叉的动画 👇 */
+        .burger-menu.active span:nth-child(1) {
+            top: 15px;
+            transform: translateX(-50%) rotate(45deg);
+        }
+
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger-menu.active span:nth-child(3) {
+            top: 15px;
+            transform: translateX(-50%) rotate(-45deg);
+        }
+
+        .burger-menu:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
         /* ================= 正文盒子 ================= */
         .main-content {
             max-width: 800px;
@@ -140,11 +215,9 @@
         .collapse-body {
             overflow: hidden;
             transition: max-height 0.35s ease;
-            /* 👇 给一个极大的兜底高度，保证展开后无论代码多长都不会被截断 */
             max-height: 50000px;
         }
 
-        /* 👇 默认关闭状态 */
         .collapse-body.collapsed {
             max-height: 0 !important;
         }
@@ -154,7 +227,6 @@
             position: fixed;
             bottom: 20px;
             right: 30px;
-
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -203,7 +275,7 @@
             transform: translate(-4px, 5px);
         }
 
-        /* ================= 代码块与提示框样式 ================= */
+        /* ================= 代码块与图片 ================= */
         pre {
             background-color: #1e1e1e;
             color: #d4d4d4;
@@ -222,32 +294,125 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             margin: 20px 0;
         }
+
+        /* ================= 响应式设计（手机端适配） ================= */
+        @media screen and (max-width: 768px) {
+
+            /* 显示汉堡按钮 */
+            .burger-menu {
+                display: block;
+            }
+
+            /* 下拉菜单面板（白底大框） */
+            .nav-menu {
+                display: block;
+                visibility: hidden;
+                opacity: 0;
+                position: absolute;
+                top: 50px;
+                right: 0;
+                background-color: #ffffff;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
+                border-radius: 12px;
+                min-width: 160px;
+                padding: 8px 0;
+                z-index: 10000;
+                transform: translateY(-10px);
+                transition: all 0.3s ease;
+            }
+
+            /* 展开状态 */
+            .nav-menu.active {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* 列表文字样式 */
+            .nav-menu .back-btn {
+                display: block;
+                width: 100%;
+                padding: 12px 20px;
+                box-sizing: border-box;
+                background: transparent;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                border: none;
+                border-radius: 0;
+                color: #333333;
+                font-size: 15px;
+                text-align: left;
+                transform: none;
+            }
+
+            /* 取消原本按钮的伪元素（避免手机上出现奇怪边框） */
+            .nav-menu .back-btn::before,
+            .nav-menu .back-btn::after {
+                display: none;
+            }
+
+            /* 列表文字悬停反馈 */
+            .nav-menu .back-btn:hover {
+                background-color: #f2f2f2;
+                color: #000000;
+                transform: none;
+            }
+        }
+
+        /* 👇 解决移动端点击后卡住 Hover 状态 👇 */
+        @media (hover: none) and (pointer: coarse) {
+            .top-btn:hover {
+                transform: none !important;
+                background: rgba(255, 255, 255, 0.4) !important;
+            }
+
+            .top-btn:hover::before,
+            .top-btn:hover::after {
+                opacity: 0 !important;
+                transform: none !important;
+            }
+
+            .back-btn:hover {
+                transform: none !important;
+                background: rgba(255, 255, 255, 0.4) !important;
+            }
+
+            .back-btn:hover::before,
+            .back-btn:hover::after {
+                opacity: 0 !important;
+                transform: none !important;
+            }
+        }
     </style>
 </head>
 
+
 <body>
-    <!-- 顶部锚点 -->
     <div id="top-anchor"></div>
 
     <div class="sticky-header">
-        <!-- 左侧盒子：放返回主页 -->
+        <!-- 左侧盒子 -->
         <div class="header-left">
             <a href="index.html" class="back-btn">
                 返回主页
             </a>
         </div>
 
-        <!-- 右侧盒子：以后想加多少按钮，就在这里写多少个 <a> 标签 -->
+        <!-- 右侧菜单 -->
         <div class="header-right">
-            <a href="block.html" class="back-btn">
-                光启
-            </a>
-            <a href="UnityShader.html" class="back-btn">
-                Unity Shader
-            </a>
-            <a href="GAMES101.html" class="back-btn">
-                GAMES101
-            </a>
+            <!-- 汉堡按钮 -->
+            <div class="burger-menu" id="burgerBtn" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <!-- 菜单列表 -->
+            <div class="nav-menu" id="myMenu">
+                <a href="block.html" class="back-btn">光启</a>
+                <a href="Unity Shader.html" class="back-btn">Unity Shader</a>
+                <a href="GAMES101.html" class="back-btn">GAMES101</a>
+            </div>
         </div>
     </div>
 
@@ -856,15 +1021,44 @@ Shader "Unlit/Chapter6-SpecularPixelLevel"
             </div>
         </div>
     </div>
-
     <script>
+        // ================== 汉堡菜单逻辑 ==================
+        function toggleMenu() {
+            var menu = document.getElementById("myMenu");
+            var burger = document.getElementById("burgerBtn");
+
+            // 切换下拉菜单
+            menu.classList.toggle("active");
+            // 切换汉堡按钮为叉叉
+            burger.classList.toggle("active");
+        }
+
+        // 点击页面空白处自动收起菜单
+        document.addEventListener('click', (e) => {
+            var menu = document.getElementById("myMenu");
+            var burger = document.getElementById("burgerBtn");
+
+            // 如果菜单是展开的，且点击的区域不是菜单和汉堡按钮本身
+            if (menu.classList.contains('active') && !e.target.closest('.header-right')) {
+                menu.classList.remove('active');
+                burger.classList.remove('active'); // 顺便把叉叉变回三条杠
+            }
+        });
+
+        // 👇 点击菜单里的任何一个链接后，自动关闭菜单 👇
+        document.querySelectorAll('.nav-menu .back-btn').forEach(item => {
+            item.addEventListener('click', () => {
+                document.getElementById("myMenu").classList.remove("active");
+                document.getElementById("burgerBtn").classList.remove("active");
+            });
+        });
+
+        // ================== 折叠面板逻辑 ==================
         const titles = document.querySelectorAll('.collapse-title');
         const topBtn = document.getElementById('topBtn');
 
-        // 点击标题切换展开/折叠
         titles.forEach((title) => {
             title.addEventListener('click', () => {
-                // 给标题和下面的内容同时加上/移除 collapsed 类
                 title.classList.toggle('collapsed');
                 const body = title.nextElementSibling;
                 body.classList.toggle('collapsed');
