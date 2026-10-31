@@ -220,12 +220,12 @@
       /* 👇 线的高度和颜色 👇 */
       height: 1px;
       background-color: rgba(255, 255, 255, 0.2);
-
+      
       /* 👇 线的宽度：比如 80%，或者你想固定成 300px 也行 👇 */
-      width: 50%;
-
+      width: 400px;
+      
       /* 👇 左右居中，或者改左边的 margin 让它靠左 👇 */
-      margin: -3.5% 10% 3.5% 50%;
+      margin: -3.5% 5% 3.5% 50%; 
     }
 
     .overview-header {
@@ -245,7 +245,7 @@
       cursor: pointer;
       opacity: 0.7;
       transition: opacity 0.2s;
-      margin-left: 50%;
+      margin-left: 410px;
     }
 
     #close-overview-btn:hover {
@@ -674,7 +674,7 @@
       e.stopPropagation();
       closeOverview();
     });
-    // ============================================================
+        // ============================================================
     // ★★★ 移动端：在面板上向右滑动关闭面板 ★★★
     // ============================================================
     const overviewPanel = document.getElementById('overview-panel');
@@ -689,14 +689,14 @@
 
     overviewPanel.addEventListener('touchmove', (e) => {
       if (!isSwiping || !isOverviewMode) return;
-
+      
       const touchCurrentX = e.touches[0].clientX;
       const swipeDistance = touchCurrentX - touchStartX;
-
+      
       // 如果向右滑动的距离超过 80 像素，直接关闭
       if (swipeDistance > 80) {
-        isSwiping = false;
-        closeOverview();
+        isSwiping = false; 
+        closeOverview();   
       }
     }, { passive: true });
 
