@@ -430,8 +430,14 @@
             <!-- 注意这里加上了 collapsed 类，默认折叠 -->
             <div class="collapse-body collapsed">
                 <img src="Chapter5.png" alt="预览" style="max-width:100%;">
-                <h3>1. 法线可视化 shader</h3>
-                <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        1. 法线可视化 shader
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 Shader "Unlit/Chapter5-NewUnlitShader" {
     SubShader {
@@ -468,8 +474,16 @@ Shader "Unlit/Chapter5-NewUnlitShader" {
         }
     }
 }</code></pre>
-                <h3>2. 使用属性</h3>
-                <pre><code>Shader "Unlit/Chapter5-NewUnlitShader 1"
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        2. 使用属性
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter5-NewUnlitShader 1"
 {
     Properties
     {
@@ -523,8 +537,16 @@ Shader "Unlit/Chapter5-NewUnlitShader" {
     }
     FallBack "Diffuse"
 }</code></pre>
-                <h3>3. 使用假彩色图像</h3>
-                <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        3. 使用假彩色图像
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 Shader "Unlit/Chapter5-NewUnlitShader 2" {
     SubShader {
@@ -590,6 +612,8 @@ Shader "Unlit/Chapter5-NewUnlitShader 2" {
             }
         }
     }</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -600,8 +624,15 @@ Shader "Unlit/Chapter5-NewUnlitShader 2" {
                 <span class="arrow">▼</span>
             </h2>
             <div class="collapse-body collapsed">
-                <h3>1. 漫反射-逐顶点</h3>
-                <pre><code>Shader "Unlit/Chapter6-DiffuseVertexLevel"
+                <img src="Chapter6.png" alt="预览" style="max-width:100%;">
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        1. 漫反射-逐顶点
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter6-DiffuseVertexLevel"
 {
     Properties
     {
@@ -659,8 +690,16 @@ Shader "Unlit/Chapter5-NewUnlitShader 2" {
     }
     Fallback "Diffuse"
 }</code></pre>
-                <h3>2. 漫反射-逐片元</h3>
-                <pre><code>// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        2. 漫反射-逐片元
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 Shader "Unlit/Chapter6-DiffusePixelLevel"
 {
@@ -719,8 +758,16 @@ Shader "Unlit/Chapter6-DiffusePixelLevel"
     }
     Fallback "Diffuse"
 }</code></pre>
-                <h3>3. 半兰伯特模型</h3>
-                <pre><code>// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        3. 半兰伯特模型
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 Shader "Unlit/Chapter6-HalfLambert"
 {
@@ -781,8 +828,16 @@ Shader "Unlit/Chapter6-HalfLambert"
     }
     Fallback "Diffuse"
 }</code></pre>
-                <h3>4. 高光反射-逐顶点</h3>
-                <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        4. 高光反射-逐顶点
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
@@ -849,8 +904,16 @@ Shader "Unlit/Chapter6-SpecularVertexLevel"
     }
     Fallback "Specular"
 }</code></pre>
-                <h3>5. 高光反射-逐片元</h3>
-                <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        5. 高光反射-逐片元
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 Shader "Unlit/Chapter6-SpecularPixelLevel"
@@ -922,8 +985,16 @@ Shader "Unlit/Chapter6-SpecularPixelLevel"
     }
     Fallback "Specular"
 }</code></pre>
-                <h3>6. Blinn-Phong 光照模型</h3>
-                <pre><code>Shader "Unlit/Chapter6-BlinnPhong"
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        6. Blinn-Phong 光照模型
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter6-BlinnPhong"
 {
     Properties
     {
@@ -998,6 +1069,8 @@ Shader "Unlit/Chapter6-SpecularPixelLevel"
     }
     Fallback "Specular"
 }</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1007,7 +1080,505 @@ Shader "Unlit/Chapter6-SpecularPixelLevel"
                 <span class="arrow">▼</span>
             </h2>
             <div class="collapse-body collapsed">
-                <h3></h3>
+                <img src="Chapter7.png" alt="预览" style="max-width:100%;">
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        1. 单张纹理
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Unlit/Chapter7-SingleTexture"
+{
+    Properties
+    {
+        _Color("Color Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        _Specular("Specular", Color) = (1,1,1,1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags {"LightMode"="ForwardBase"}
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                o.uv = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
+           
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+
+                return fixed4(ambient + diffuse + specular, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        2. 法线纹理-切线空间
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter7-NormalMapTangentSpace"
+{
+    Properties
+    {
+        _Color ("Color Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" { }
+        _BumpMap ("Normal Map", 2D) = "bump" { } //bump是unity内置的法线纹理，对应了模型自带的法线信息
+        _BumpScale ("Bump Scale", Float) = 1.0   //控制凹凸程度，为 0 时法线纹理不会对光照产生任何影响
+        _Specular ("Specular", Color) = (1,1,1,1)
+        _Gloss ("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags{"LightMode"="ForwardBase"}
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;  //sampler2D 对应纹理资源，用于后续 tex2D 采样
+            float4 _MainTex_ST;  //采样返回值存为 float4（或者其他类型）
+            sampler2D _BumpMap;
+            float4 _BumpMap_ST;
+            float _BumpScale;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v  //从模型顶点数据输入到顶点着色器的结构体
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 tangent : TANGENT; //切线的类型是float4，因为tangent.w分量决定切线空间中的副切线的方向性
+                float4 texcoord : TEXCOORD0;   //取模型该顶点的纹理坐标
+            };
+
+            struct v2f   //计算后得到的变量的值输出到语义通道
+            {
+                float4 pos : SV_POSITION;
+                float4 uv : TEXCOORD0;
+                float3 lightDir : TEXCOORD1;
+                float3 viewDir : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+
+                o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
+                o.uv.zw = v.texcoord.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
+
+                float3 binormal = cross(normalize(v.normal), normalize(v.tangent.xyz)) * v.tangent.w;
+                float3x3 rotation = float3x3(v.tangent.xyz, binormal, v.normal); //从模型空间到切线空间的变换矩阵 rotation，把模型空间下的切线方向、副切线方向和法线方向按行排列
+                //TANGENT_SPACE_ROTATION; 在 UnityCG.cginc 中定义的内置宏，直接计算得到 rotation
+
+                o.lightDir = mul(rotation, ObjSpaceLightDir(v.vertex)).xyz;  //模型空间下的TBN组成的变换矩阵 跟模型空间下的向量相乘就是 切线空间的向量
+                o.viewDir = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 tangentLightDir = normalize(i.lightDir);
+                fixed3 tangentViewDir = normalize(i.viewDir);
+
+                fixed4 packedNormal = tex2D(_BumpMap, i.uv.zw);  //利用 tex2D 对法线纹理 _BumpMap 进行采样
+                fixed3 tangentNormal;
+                tangentNormal.xy = (packedNormal.xy * 2 - 1) * _BumpScale;  //法线纹理中存储的是把法线 [-1,1] 经过映射后得到的像素值 [0,1]，需要反映射 //_BumpScale是法线扰动（凹凸）
+                tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy))); //z 根据扰动后的 xy 算出，saturate 把扰动后可能大于 1 的 (x^2 + y^2) 钳制在 [0,1]，保证计算出的 z 是安全的，但算出来的法线不一定是单位向量
+                //tangentNormal = UnpackNormal(packedNormal);
+                //tangentNormal.xy *= _BumpScale;
+                //tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
+
+                fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb; //贴图乘染色
+
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+
+                fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss);
+
+                return fixed4(ambient + diffuse + specular, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        3. 法线纹理-世界空间
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Unlit/Chapter7-NormalMapWorldSpace"
+{
+    Properties
+    {
+        _Color ("Color Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" { }
+        _BumpMap ("Normal Map", 2D) = "bump" { } //bump是unity内置的法线纹理，对应了模型自带的法线信息
+        _BumpScale ("Bump Scale", Float) = 1.0   //控制凹凸程度，为 0 时法线纹理不会对光照产生任何影响
+        _Specular ("Specular", Color) = (1,1,1,1)
+        _Gloss ("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags{"LightMode"="ForwardBase"}
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;  //sampler2D 对应纹理资源，用于后续 tex2D 采样
+            float4 _MainTex_ST;  //采样返回值存为 float4（或者其他类型）
+            sampler2D _BumpMap;
+            float4 _BumpMap_ST;
+            float _BumpScale;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            { 
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 tangent : TANGENT; //切线的类型是float4，因为tangent.w分量决定切线空间中的副切线的方向性
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float4 uv : TEXCOORD0;
+                float4 TtoW0 : TEXCOORD1;
+                float4 TtoW1 : TEXCOORD2;
+                float4 TtoW2 : TEXCOORD3;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+
+                o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
+                o.uv.zw = v.texcoord.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;
+
+                float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
+                fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w;
+
+                //把矩阵的每一行分别存储在 TtoW0、TtoW1、TtoW2 中，把世界空间下的顶点位置的 xyz 分别存储在这些变量的 w 分量中，以充分利用插值寄存器的存储空间
+                o.TtoW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, worldPos.x); 
+                o.TtoW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, worldPos.y);
+                o.TtoW2 = float4(worldTangent.z, worldBinormal.z, worldNormal.z, worldPos.z);
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);
+                float3 lightDir = normalize(UnityWorldSpaceLightDir(worldPos));
+                float3 viewDir = normalize(UnityWorldSpaceViewDir(worldPos));
+
+                fixed3 bump = UnpackNormal(tex2D(_BumpMap, i.uv.zw));
+                bump.xy *= _BumpScale;
+                bump.z = sqrt(1.0 - saturate(dot(bump.xy, bump.xy)));
+                bump = normalize(half3(dot(i.TtoW0.xyz, bump), dot(i.TtoW1.xyz, bump), dot(i.TtoW2.xyz, bump)));
+
+                fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb; //贴图乘染色
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(bump, lightDir));
+                fixed3 halfDir = normalize(lightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(bump, halfDir)), _Gloss);
+                return fixed4(ambient + diffuse + specular, 1.0);
+                
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        4. 渐变纹理
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter7-RampTexture"
+{
+    Properties
+    {
+        _Color ("Color Tint", Color) = (1,1,1,1)
+        _RampTex ("Ramp Tex", 2D) = "white" {}
+        _Specular ("Specular", Color) = (1,1,1,1)
+        _Gloss ("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags { "LightMode" = "ForwardBase" }
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _RampTex;
+            float4 _RampTex_ST;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                //使用内置的 TRANSFORM_TEX 宏来计算经过平铺和偏移后的纹理坐标
+                //用贴图的 Tiling（平铺）、Offset（偏移）去乘加原始 uv。
+                o.uv = TRANSFORM_TEX(v.texcoord, _RampTex);   
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+
+                fixed halfLambert = 0.5 * dot(worldNormal, worldLightDir) + 0.5;
+
+                //使用 halfLambert 来构建一个纹理坐标，并用这个纹理坐标对渐变纹理 _RampTex 进行采样
+                //由于 _RampTex 实际就是一个一维纹理（纵轴方向颜色不变），因此纹理坐标的u，v都使用 halfLambert
+                fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;
+                fixed3 diffuse = _LightColor0.rgb * diffuseColor;
+
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+
+                return fixed4(ambient + diffuse + specular, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        5. 遮罩纹理
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter7-MaskTexture"
+{
+    Properties
+    {
+        _Color ("Color Tint", Color) = (1, 1, 1, 1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        _BumpMap ("Normal Map", 2D) = "bump" {}
+        _BumpScale ("Bump Scale", Float) = 1.0
+        _SpecularMask ("Specular Mask", 2D) = "white" {} //高光反射遮罩纹理
+        _SpecularScale ("Specular Scale", Float) = 1.0   //用于控制遮罩影响度的系数
+        _Specular ("Specular", Color) = (1, 1, 1, 1)
+        _Gloss ("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Pass
+        {
+            Tags{ "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;  //我们为主纹理 _MainTex、法线纹理 _BumpMap 和遮罩纹理 _SpecularMask 定义了它们共同使用的纹理属性变量 _MainTex_ST。在材质面板中修改主纹理的平铺系数和偏移系数会同时影响3个纹理的采样。节省需要存储的纹理坐标数目。
+            sampler2D _BumpMap;
+            float _BumpScale;
+            sampler2D _SpecularMask;
+            float _SpecularScale;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 tangent : TANGENT;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                float3 lightDir : TEXCOORD1;
+                float3 viewDir : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.uv.xy = v.texcoord.xy * _MainTex_ST.xy + _MainTex_ST.zw;
+                TANGENT_SPACE_ROTATION;
+                o.lightDir = mul(rotation, ObjSpaceLightDir(v.vertex)).xyz;
+                o.viewDir = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 tangentLightDir = normalize(i.lightDir);
+                fixed3 tangentViewDir = normalize(i.viewDir);
+
+                fixed3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uv));
+                tangentNormal.xy *= _BumpScale;
+                tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));
+
+                fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
+
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));
+
+                fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);
+
+                fixed specularMask = tex2D(_SpecularMask, i.uv).r * _SpecularScale;
+
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss) * specularMask;
+
+                return fixed4(ambient + diffuse + specular, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="collapse-wrap">
@@ -1016,7 +1587,540 @@ Shader "Unlit/Chapter6-SpecularPixelLevel"
                 <span class="arrow">▼</span>
             </h2>
             <div class="collapse-body collapsed">
-                <h3></h3>
+                <img src="Chapter8.png" alt="预览" style="max-width:100%;">
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        1. 透明度测试
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter8-AlphaTest"
+{
+    Properties
+    {
+        _Color ("Main Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        _Cutoff ("Alpha Cutoff", Range(0,1)) = 0.5
+    }
+    SubShader
+    {
+        //使用了透明度测试的 shader 都应该在 SubShader 中设置这三个标签
+
+        //Queue ，渲染队列，透明度测试；
+        //IgnoreProjector ，这个 shader 不会受到投影器 Projectors 的影响； 
+        //RenderType ，让 unity 把这个 shader 归入到提前定义的组 TransparentCutout ，以指明这是一个使用了透明度测试的 shader
+        //RenderType 标签通常被用于着色器替换功能
+        Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
+
+        Pass
+        {
+            //LightMode 标签是 Pass 标签中的一种，用于定义该 Pass 在 Unity 的光照流水线中的角色，得到 unity 的内置光照变量
+            Tags { "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _Cutoff; //Cutoff 的范围在 [0,1]，使用 fixed
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //宏，专门做贴图偏移、缩放（Tiling & Offset），写在顶点着色器里，把原始 uv 转换成受 _MainTex 的 Tiling/Offset 控制后的 uv
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                //clip 函数，判断参数是否为负，是则舍弃该片元的输出，完全透明
+                clip (texColor.a - _Cutoff);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                return fixed4(ambient + diffuse, 1.0);
+            }
+            ENDCG
+        }
+    }
+    //回调 shader ，保证在 SubShader 无法在当前显卡上工作时有合适的代替 shader ，保证使用透明度测试的物体可以正确地向其他物体投射阴影
+    Fallback "Transparent/Cutout/VertexLit"
+}
+
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        2. 透明度混合
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter8-AlphaBlend"
+{
+    Properties
+    {
+        _Color ("Main Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        //_AlphaScale 用于在透明纹理的基础上控制整体的透明度
+        _AlphaScale ("Alpha Scale", Range(0,1)) = 1
+    }
+    SubShader
+    {
+        //使用了透明度混合的 shader 都应该在 SubShader 中设置这三个标签
+
+        //Queue ，渲染队列，透明度混合
+        //RenderType ，让 unity 把这个 shader 归入到提前定义的组 Transparent，指明这是一个使用了透明度混合的 shader
+        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            ZWrite Off  //关闭深度写入
+            Blend SrcAlpha OneMinusSrcAlpha  //开启并设置了该 Pass 的混合模式
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _AlphaScale;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //宏，专门做贴图偏移、缩放（Tiling & Offset），写在顶点着色器里，把原始 uv 转换成受 _MainTex 的 Tiling/Offset 控制后的 uv
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                return fixed4(ambient + diffuse, texColor.a * _AlphaScale); //设置该片元着色器返回值中的透明通道，只有使用 Blend 命令打开混合后才有意义
+            }
+            ENDCG
+        }
+    }
+    Fallback "Transparent/VertexLit"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        3. 透明度混合-开启深度写入
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/Chapter8-AlphaBlendZWrite"
+{
+    Properties
+    {
+        _Color ("Main Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        //_AlphaScale 用于在透明纹理的基础上控制整体的透明度
+        _AlphaScale ("Alpha Scale", Range(0,1)) = 1
+    }
+    SubShader
+    {
+        //使用了透明度混合的 shader 都应该在 SubShader 中设置这三个标签
+
+        //Queue ，渲染队列，透明度混合
+        //RenderType ，让 unity 把这个 shader 归入到提前定义的组 Transparent，指明这是一个使用了透明度混合的 shader
+        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+
+        //该 Pass 把模型的深度信息写入深度缓冲，剔除模型中被自身遮挡的片元
+        Pass{
+            ZWrite On
+            ColorMask 0 //设置颜色通道的写掩码 write mask，为 0 表示不写入任何颜色通道（不输出任何颜色）
+            }
+
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            ZWrite Off  //关闭深度写入
+            Blend SrcAlpha OneMinusSrcAlpha  //开启并设置了该 Pass 的混合模式
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _AlphaScale;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //宏，专门做贴图偏移、缩放（Tiling & Offset），写在顶点着色器里，把原始 uv 转换成受 _MainTex 的 Tiling/Offset 控制后的 uv
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                return fixed4(ambient + diffuse, texColor.a * _AlphaScale); //设置该片元着色器返回值中的透明通道，只有使用 Blend 命令打开混合后才有意义
+            }
+            ENDCG
+        }
+    }
+    Fallback "Transparent/VertexLit"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        4. 透明度测试-双面渲染
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter8-AlphaTestBothSided"
+{
+    Properties
+    {
+        _Color ("Main Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        _Cutoff ("Alpha Cutoff", Range(0,1)) = 0.5
+    }
+    SubShader
+    {
+        //使用了透明度测试的 shader 都应该在 SubShader 中设置这三个标签
+
+        //Queue ，渲染队列，透明度测试；
+        //IgnoreProjector ，这个 shader 不会受到投影器 Projectors 的影响； 
+        //RenderType ，让 unity 把这个 shader 归入到提前定义的组 TransparentCutout ，以指明这是一个使用了透明度测试的 shader
+        //RenderType 标签通常被用于着色器替换功能
+        Tags {"Queue"="AlphaTest" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
+
+        Pass
+        {
+            //LightMode 标签是 Pass 标签中的一种，用于定义该 Pass 在 Unity 的光照流水线中的角色，得到 unity 的内置光照变量
+            Tags { "LightMode"="ForwardBase" }
+
+            Cull Off  //关闭剔除
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _Cutoff; //Cutoff 的范围在 [0,1]，使用 fixed
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //宏，专门做贴图偏移、缩放（Tiling & Offset），写在顶点着色器里，把原始 uv 转换成受 _MainTex 的 Tiling/Offset 控制后的 uv
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                //clip 函数，判断参数是否为负，是则舍弃该片元的输出，完全透明
+                clip (texColor.a - _Cutoff);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                return fixed4(ambient + diffuse, 1.0);
+            }
+            ENDCG
+        }
+    }
+    //回调 shader ，保证在 SubShader 无法在当前显卡上工作时有合适的代替 shader ，保证使用透明度测试的物体可以正确地向其他物体投射阴影
+    Fallback "Transparent/Cutout/VertexLit"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        5. 透明度混合-双面渲染
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter8-AlphaBlendBothSided"
+{
+    Properties
+    {
+        _Color ("Main Tint", Color) = (1,1,1,1)
+        _MainTex ("Main Tex", 2D) = "white" {}
+        //_AlphaScale 用于在透明纹理的基础上控制整体的透明度
+        _AlphaScale ("Alpha Scale", Range(0,1)) = 1
+    }
+    SubShader
+    {
+        //使用了透明度混合的 shader 都应该在 SubShader 中设置这三个标签
+
+        //Queue ，渲染队列，透明度混合
+        //RenderType ，让 unity 把这个 shader 归入到提前定义的组 Transparent，指明这是一个使用了透明度混合的 shader
+        Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            Cull Front  //朝向摄像机的渲染图元不会被渲染
+
+            ZWrite Off  //关闭深度写入
+            Blend SrcAlpha OneMinusSrcAlpha  //开启并设置了该 Pass 的混合模式
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _AlphaScale;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //宏，专门做贴图偏移、缩放（Tiling & Offset），写在顶点着色器里，把原始 uv 转换成受 _MainTex 的 Tiling/Offset 控制后的 uv
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                return fixed4(ambient + diffuse, texColor.a * _AlphaScale); //设置该片元着色器返回值中的透明通道，只有使用 Blend 命令打开混合后才有意义
+            }
+            ENDCG
+        }
+
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            Cull Back  //背对摄像机的渲染图元不会被渲染
+
+            ZWrite Off  //关闭深度写入
+            Blend SrcAlpha OneMinusSrcAlpha  //开启并设置了该 Pass 的混合模式
+
+            CGPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "Lighting.cginc"
+
+            fixed4 _Color;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            fixed _AlphaScale;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 texcoord : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                float2 uv : TEXCOORD2;
+            };
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                //宏，专门做贴图偏移、缩放（Tiling & Offset），写在顶点着色器里，把原始 uv 转换成受 _MainTex 的 Tiling/Offset 控制后的 uv
+                o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal);
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+
+                fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                fixed3 albedo = texColor.rgb * _Color.rgb;
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+                fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+                return fixed4(ambient + diffuse, texColor.a * _AlphaScale); //设置该片元着色器返回值中的透明通道，只有使用 Blend 命令打开混合后才有意义
+            }
+            ENDCG
+        }
+    }
+    Fallback "Transparent/VertexLit"
+}
+</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

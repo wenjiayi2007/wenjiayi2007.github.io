@@ -16,9 +16,23 @@
             background-color: #fafafa;
         }
 
-        h1 { border-bottom: 2px solid #eee; padding-bottom: 15px; margin-top: 30px; color: #2c3e50; }
-        h2 { margin-top: 40px; color: #2c3e50; border-left: 4px solid #0066cc; padding-left: 12px; }
-        p { margin: 15px 0; }
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-top: 30px;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #2c3e50;
+            border-left: 4px solid #0066cc;
+            padding-left: 12px;
+        }
+
+        p {
+            margin: 15px 0;
+        }
 
         /* ================= 导航栏 ================= */
         .sticky-header {
@@ -30,7 +44,7 @@
             padding: 20px 30px 10px 30px;
             z-index: 1000;
             display: flex;
-            align-items: center; 
+            align-items: center;
             justify-content: space-between;
             box-sizing: border-box;
         }
@@ -68,22 +82,34 @@
             background: rgba(255, 255, 255, 0.8);
         }
 
-        .back-btn::before, .back-btn::after {
+        .back-btn::before,
+        .back-btn::after {
             content: "";
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             border: 2px solid rgba(0, 0, 0, 0.6);
             border-radius: 999px;
             transition: 0.25s ease;
             opacity: 0;
             pointer-events: none;
         }
-        .back-btn:hover::before { opacity: 0.4; transform: translate(-3px, 1.5px); }
-        .back-btn:hover::after { opacity: 0.15; transform: translate(-4px, 5px); }
+
+        .back-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .back-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
 
         /* ================= 右侧菜单容器 ================= */
         .header-right {
-            position: relative; 
+            position: relative;
         }
 
         /* 导航链接列表（电脑端水平排布） */
@@ -103,7 +129,8 @@
             border-radius: 999px;
             padding: 0;
             cursor: pointer;
-            position: relative; /* 绝对定位的参考系 */
+            position: relative;
+            /* 绝对定位的参考系 */
             width: 40px;
             height: 34px;
             box-sizing: border-box;
@@ -116,29 +143,40 @@
             display: block;
             position: absolute;
             left: 50%;
-            width: 18px;     
-            height: 2px;     
+            width: 18px;
+            height: 2px;
             background-color: #333;
-            transform: translateX(-50%); /* 完美水平居中 */
+            transform: translateX(-50%);
+            /* 完美水平居中 */
             transition: transform 0.3s ease, opacity 0.3s ease, top 0.3s ease;
         }
 
         /* 默认三条线的位置 */
-        .burger-menu span:nth-child(1) { top: 9px; }
-        .burger-menu span:nth-child(2) { top: 15px; }
-        .burger-menu span:nth-child(3) { top: 21px; }
+        .burger-menu span:nth-child(1) {
+            top: 9px;
+        }
+
+        .burger-menu span:nth-child(2) {
+            top: 15px;
+        }
+
+        .burger-menu span:nth-child(3) {
+            top: 21px;
+        }
 
         /* 👇 变形为叉叉的动画 👇 */
         .burger-menu.active span:nth-child(1) {
-            top: 15px; 
-            transform: translateX(-50%) rotate(45deg); 
+            top: 15px;
+            transform: translateX(-50%) rotate(45deg);
         }
+
         .burger-menu.active span:nth-child(2) {
-            opacity: 0; 
+            opacity: 0;
         }
+
         .burger-menu.active span:nth-child(3) {
-            top: 15px; 
-            transform: translateX(-50%) rotate(-45deg); 
+            top: 15px;
+            transform: translateX(-50%) rotate(-45deg);
         }
 
         .burger-menu:hover {
@@ -153,7 +191,10 @@
         }
 
         /* ================= 折叠面板样式 ================= */
-        .collapse-wrap { margin-bottom: 50px; }
+        .collapse-wrap {
+            margin-bottom: 50px;
+        }
+
         .collapse-title {
             cursor: pointer;
             user-select: none;
@@ -162,14 +203,24 @@
             justify-content: space-between;
             gap: 8px;
         }
-        .collapse-title .arrow { transition: transform 0.2s ease; }
-        .collapse-title.collapsed .arrow { transform: rotate(-90deg); }
+
+        .collapse-title .arrow {
+            transition: transform 0.2s ease;
+        }
+
+        .collapse-title.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+
         .collapse-body {
             overflow: hidden;
             transition: max-height 0.35s ease;
-            max-height: 50000px; 
+            max-height: 50000px;
         }
-        .collapse-body.collapsed { max-height: 0 !important; }
+
+        .collapse-body.collapsed {
+            max-height: 0 !important;
+        }
 
         /* ================= 右下角常驻悬浮按钮 ================= */
         .top-btn {
@@ -193,13 +244,36 @@
             cursor: pointer;
             z-index: 999;
         }
-        .top-btn:hover { transform: translate(4px, -3px); background: rgba(255, 255, 255, 0.8); }
-        .top-btn::before, .top-btn::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border: 2px solid rgba(0, 0, 0, 0.6); border-radius: 999px; transition: 0.25s ease; opacity: 0; pointer-events: none;
+
+        .top-btn:hover {
+            transform: translate(4px, -3px);
+            background: rgba(255, 255, 255, 0.8);
         }
-        .top-btn:hover::before { opacity: 0.4; transform: translate(-3px, 1.5px); }
-        .top-btn:hover::after { opacity: 0.15; transform: translate(-4px, 5px); }
+
+        .top-btn::before,
+        .top-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(0, 0, 0, 0.6);
+            border-radius: 999px;
+            transition: 0.25s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .top-btn:hover::before {
+            opacity: 0.4;
+            transform: translate(-3px, 1.5px);
+        }
+
+        .top-btn:hover::after {
+            opacity: 0.15;
+            transform: translate(-4px, 5px);
+        }
 
         /* ================= 代码块与图片 ================= */
         pre {
@@ -214,12 +288,20 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        img { max-width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin: 20px 0; }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
 
         /* ================= 响应式设计（手机端适配） ================= */
         @media screen and (max-width: 768px) {
+
             /* 显示汉堡按钮 */
-            .burger-menu { display: block; }
+            .burger-menu {
+                display: block;
+            }
 
             /* 下拉菜单面板（白底大框） */
             .nav-menu {
@@ -230,7 +312,7 @@
                 top: 50px;
                 right: 0;
                 background-color: #ffffff;
-                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.15); 
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
                 border-radius: 12px;
                 min-width: 160px;
                 padding: 8px 0;
@@ -264,8 +346,10 @@
             }
 
             /* 取消原本按钮的伪元素（避免手机上出现奇怪边框） */
-            .nav-menu .back-btn::before, 
-            .nav-menu .back-btn::after { display: none; }
+            .nav-menu .back-btn::before,
+            .nav-menu .back-btn::after {
+                display: none;
+            }
 
             /* 列表文字悬停反馈 */
             .nav-menu .back-btn:hover {
@@ -278,18 +362,23 @@
         /* 👇 解决移动端点击后卡住 Hover 状态 👇 */
         @media (hover: none) and (pointer: coarse) {
             .top-btn:hover {
-                transform: none !important; 
+                transform: none !important;
                 background: rgba(255, 255, 255, 0.4) !important;
             }
-            .top-btn:hover::before, .top-btn:hover::after {
+
+            .top-btn:hover::before,
+            .top-btn:hover::after {
                 opacity: 0 !important;
                 transform: none !important;
             }
+
             .back-btn:hover {
                 transform: none !important;
                 background: rgba(255, 255, 255, 0.4) !important;
             }
-            .back-btn:hover::before, .back-btn:hover::after {
+
+            .back-btn:hover::before,
+            .back-btn:hover::after {
                 opacity: 0 !important;
                 transform: none !important;
             }
@@ -338,11 +427,25 @@
                 <span class="arrow">▼</span>
             </h2>
             <div class="collapse-body collapsed">
-                <h3>1. 推导 视锥→立方体 变换矩阵</h3>
-                <img src="persp2ortho.jpg" style="width: 100%; display: block; margin: 20px 0;">
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        1. 推导 视锥→立方体 变换矩阵
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <img src="persp2ortho.jpg" style="width: 100%; display: block; margin: 20px 0;">
+                    </div>
+                </div>
 
-                <h3>2. 构建模型矩阵 M</h3>
-                <pre><code>Eigen::Matrix4f get_model_matrix(float rotation_angle)
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        2. 构建模型矩阵 M
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
 
@@ -359,8 +462,16 @@
     // Then return it.
     return model;
 }</code></pre>
-                <h3>3. 构建透视投影矩阵 P</h3>
-                <pre><code>Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        3. 构建透视投影矩阵 P
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar)
 {
     // Students will implement this function
@@ -392,6 +503,8 @@
     // Then return it.
     return projection;
 }</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -431,7 +544,7 @@
         function toggleMenu() {
             var menu = document.getElementById("myMenu");
             var burger = document.getElementById("burgerBtn");
-            
+
             // 切换下拉菜单
             menu.classList.toggle("active");
             // 切换汉堡按钮为叉叉
@@ -442,7 +555,7 @@
         document.addEventListener('click', (e) => {
             var menu = document.getElementById("myMenu");
             var burger = document.getElementById("burgerBtn");
-            
+
             // 如果菜单是展开的，且点击的区域不是菜单和汉堡按钮本身
             if (menu.classList.contains('active') && !e.target.closest('.header-right')) {
                 menu.classList.remove('active');
