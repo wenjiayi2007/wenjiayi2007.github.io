@@ -366,7 +366,20 @@ loader.load('./models/wenjiayi.glb', (gltf) => {
 });
 
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    // 强制获取当前屏幕的真实可视宽高（适配手机地址栏收缩）
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // 1. 更新 3D 相机比例
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // 2. 更新 3D 渲染器尺寸
+    renderer.setSize(width, height);
+
+    // 3. 更新像素比（防止手机端画质模糊或画面被挤压）
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
+
+// 页面加载完立即触发一次，确保初始状态就是满屏
+window.dispatchEvent(new Event('resize'));
