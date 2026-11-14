@@ -135,8 +135,7 @@
     <!-- 1. 导航栏 -->
     <div class="sticky-header">
         <div class="header-left">
-            <!-- 👇 返回主页，修复了 SVG 的位置 👇 -->
-            <a href="javascript:void(0);" onclick="openSmart('index.html');" class="back-btn"
+            <a href="index.html" class="back-btn"
                 style="width: 30px; height: 30px; padding: 0; justify-content: center;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14"
                     fill="currentColor">
@@ -150,11 +149,9 @@
                 <span></span><span></span><span></span>
             </div>
             <div class="nav-menu" id="myMenu">
-                <!-- 👇 导航栏里的链接，智能跳转 👇 -->
-                <a href="javascript:void(0);" onclick="openSmart('Unity Shader.html');" class="back-btn">Unity
-                    Shader</a>
-                <a href="javascript:void(0);" onclick="openSmart('GAMES101.html');" class="back-btn">GAMES101</a>
-                <a href="javascript:void(0);" onclick="openSmart('手记.html');" class="back-btn">手记</a>
+                <a href="Unity Shader.html" class="back-btn">Unity Shader</a>
+                <a href="GAMES101.html" class="back-btn">GAMES101</a>
+                <a href="手记.html" class="back-btn">手记</a>
             </div>
         </div>
     </div>
@@ -225,15 +222,16 @@
             }
         });
 
-        // 回到顶部逻辑
-        document.getElementById('topBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        // ================== 回到顶部逻辑 ==================
+        if (topBtn) {
+            topBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
     </script>
-
-    <!-- 👇 引入公共的智能跳转逻辑 👇 -->
-    <script src="smart-link.js"></script>
 </body>
 
 </html>

@@ -18,8 +18,9 @@
   <div id="enter-overview-btn">&darr; Learning Log / Timeline &darr;</div>
 
   <div id="overview-panel">
-    <div class="overview-header">
-<a href="javascript:void(0);" onclick="openSmart('手记.html');" style="color: inherit; text-decoration: none; margin-right: 45px;" class="note-title">手记</a>      <div id="close-overview-btn">&times; 关闭</div>
+        <div class="overview-header">
+      <a href="手记.html" style="color: inherit; text-decoration: none; margin-right: 45px;" class="note-title">手记</a>
+      <div id="close-overview-btn">&times; 关闭</div>
     </div>
     <div class="header-divider"></div>
     <div class="timeline-scroll">
@@ -28,8 +29,7 @@
         <div class="timeline-item">
           <div class="timeline-date">2026-10-24</div>
           <div class="timeline-content">
-            <!-- 👇 光启：智能跳转 👇 -->
-            <a href="javascript:void(0);" onclick="openSmart('光启.html');"
+            <a href="光启.html" target="_blank"
               style="text-decoration: none; color: inherit; cursor: pointer; display: block; width: fit-content; margin-left: auto;">
               <h3>《光启》</h3>
             </a>
@@ -53,8 +53,8 @@
           <div class="timeline-date">2026-09-10</div>
           <div class="timeline-content">
             <!-- 👇 Unity Shader：智能跳转 👇 -->
-            <a href="javascript:void(0);" onclick="openSmart('Unity Shader.html');"
-              style="text-decoration: none; color: inherit; display: block; width: fit-content; margin-left: auto;">
+            <a href="Unity Shader.html"
+              style="text-decoration: none; color: inherit; cursor: pointer; display: block; width: fit-content; margin-left: auto;">
               <h3>《Unity Shader入门精要》</h3>
             </a>
             <p>以 Unity ShaderLab 为载体<br>把通用计算机渲染知识转化为在 Unity 引擎里<br>可编写、可调试、可复用的着色效果<br>熟悉 Unity 管线的工作规则与引擎提供的渲染基础设施</p>
@@ -63,9 +63,8 @@
         <div class="timeline-item">
           <div class="timeline-date">2026-08-25</div>
           <div class="timeline-content">
-            <!-- 👇 GAMES101：智能跳转 👇 -->
-            <a href="javascript:void(0);" onclick="openSmart('GAMES101.html');"
-              style="text-decoration: none; color: inherit; display: block; width: fit-content; margin-left: auto;">
+           <a href="GAMES101.html"
+              style="text-decoration: none; color: inherit; cursor: pointer; display: block; width: fit-content; margin-left: auto;">
               <h3>GAMES101-现代计算机图形学入门</h3>
             </a>
             <p>Rasterization 光栅化<br>Curves and Meshes 几何<br>Ray Tracing 光线追踪<br>Animation/Simulation 动画与模拟</p>
@@ -108,8 +107,6 @@
     }
   </script>
 
-  <!-- 👇 引入公共的智能跳转逻辑 👇 -->
-  <script src="smart-link.js"></script>
   <script type="module" src="main.js"></script>
 </body>
 

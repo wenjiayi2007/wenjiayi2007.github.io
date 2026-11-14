@@ -230,6 +230,7 @@ body.in-overview #overview-panel {
     font-weight: bold;
     margin-bottom: 30px;
     padding-bottom: 15px;
+    flex-wrap: nowrap;
 }
 
 #close-overview-btn {
