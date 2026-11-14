@@ -168,7 +168,10 @@ canvas {
     transform: translateY(-50%);
     z-index: 20;
     color: #380082;
-    font-family: ui-monospace, monospace;
+    /* 👇 苹果保留中文字体，电脑英文优先用 Georgia 斜体 👇 */
+    font-family: "PingFang SC", "Georgia", "Times New Roman", "Microsoft YaHei", serif;
+    font-style: italic;
+    /* 👈 必须加上这一句才会倾斜 */
     font-size: 28px;
     letter-spacing: 3px;
     cursor: pointer;
@@ -297,7 +300,7 @@ body.in-overview #overview-panel {
 .timeline-date {
     color: rgba(255, 255, 255, 0.6);
     font-size: 14px;
-    font-family: ui-monospace, monospace;
+    font-family: ui-monospace, "Cascadia Code", "Consolas", "Fira Code", "Courier New", monospace;
     margin-bottom: 8px;
 }
 
@@ -351,4 +354,3 @@ body.in-overview #enter-overview-btn {
     margin-right: 10px;
     padding-right: 15px;
 }
-

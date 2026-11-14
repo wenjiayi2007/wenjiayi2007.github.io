@@ -54,7 +54,7 @@
         .page-title {
             text-align: center;
             font-size: 2.7rem;
-            font-weight: 300;
+            font-weight: 200;
             margin-bottom: 0px;
             color: #3f3f3f;
             font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -79,12 +79,13 @@
             color: #888;
             font-size: 0.95rem;
             margin-bottom: 0.6rem;
+            font-family: ui-monospace, "Cascadia Code", "Consolas", "Fira Code", "Courier New", monospace;
         }
 
         .note-title {
             font-size: 2.5rem;
-            font-weight: 100;
-            font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+            font-weight: 580;
+            font-family: "Kaiti SC", "Noto Serif SC", "Songti SC", "SimSun", serif;
             color: #3f3f3f !important;
             text-decoration: none;
             display: block;
@@ -100,7 +101,8 @@
             color: #555;
             font-size: 1.2rem;
             line-height: 1.6;
-            font-family: "Kaiti SC", "STKaiti", "KaiTi", serif;
+            font-weight: 400;
+            font-family: "Kaiti SC", "Noto Serif SC", "Songti SC", "SimSun", serif;
         }
 
         @media screen and (max-width: 768px) {
@@ -169,25 +171,7 @@
     <!-- 3. 页面主体 -->
     <div class="notes-content">
         <h1 class="page-title">手记</h1>
-
-        <div class="columns note-block">
-            <div class="column is-half">
-                <!-- 👇 图片点击，智能跳转 👇 -->
-                <a href="javascript:void(0);" onclick="openSmart('note2.html');">
-                    <img class="note-img" src="images/note2.jpg" alt="">
-                </a>
-            </div>
-            <div class="column is-half push-down">
-                <div class="note-date"></div>
-                <!-- 👇 标题点击，智能跳转 👇 -->
-                <a href="javascript:void(0);" onclick="openSmart('note2.html');" class="note-title"></a>
-                <div class="note-desc">
-
-                </div>
-            </div>
-        </div>
-
-        <!-- 第一篇手记 -->
+        <!-- 👇 这里插入新的手记 👇 -->
         <div class="columns note-block">
             <div class="column is-half">
                 <!-- 👇 图片点击，智能跳转 👇 -->
@@ -220,6 +204,7 @@
                 </div>
             </div>
         </div>
+        <!-- 👇 这里插入新的手记 👇 -->
     </div>
 
     <!-- 4. 脚本 -->
