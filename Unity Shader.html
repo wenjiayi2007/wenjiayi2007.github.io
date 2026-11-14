@@ -13,14 +13,12 @@
     <div id="top-anchor"></div>
 
     <div class="sticky-header">
-        <!-- 左侧盒子 -->
+                <!-- 左侧盒子 -->
         <div class="header-left">
-            <a href="index.html" class="back-btn"
+            <a href="javascript:void(0);" onclick="openSmart('index.html');" class="back-btn"
                 style="width: 30px; height: 30px; padding: 0; justify-content: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14"
-                    fill="currentColor">
-                    <path
-                        d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14" fill="currentColor">
+                    <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
                 </svg>
             </a>
         </div>
@@ -36,8 +34,10 @@
 
             <!-- 菜单列表 -->
             <div class="nav-menu" id="myMenu">
-                <a href="Unity Shader.html" class="back-btn">Unity Shader</a>
-                <a href="GAMES101.html" class="back-btn">GAMES101</a>
+                <a href="javascript:void(0);" onclick="openSmart('Unity Shader.html');" class="back-btn">Unity
+                    Shader</a>
+                <a href="javascript:void(0);" onclick="openSmart('GAMES101.html');" class="back-btn">GAMES101</a>
+                <a href="javascript:void(0);" onclick="openSmart('手记.html');" class="back-btn">手记</a>
             </div>
         </div>
     </div>
@@ -1765,7 +1765,7 @@ Shader "Unlit/Chapter8-AlphaBlendZWrite"
                 <div class="collapse-wrap" style="margin-bottom: 20px;">
                     <h3 class="collapse-title collapsed"
                         style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
-                        1. 光照衰减-纹理(_LightTexture0)
+                        1. 让不透明物体投射阴影
                         <span class="arrow">▼</span>
                     </h3>
                     <div class="collapse-body collapsed">
@@ -1903,18 +1903,345 @@ Shader "Unlit/Chapter9-ForwardRendering"
                 fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
                 
                 #ifdef USING_DIRECTIONAL_LIGHT
-                    fixed atten = 1.0;  //平行光衰减值为 1
-                #else   //其他光源类型，可以使用数学表达式来计算衰减（计算量大），这里使用一张纹理作为查找表，以在片元着色器中得到光源的衰减
-                    #if defined (POINT)   //得到光源空间下的坐标，使用该坐标对衰减纹理进行采样得到衰减值
-                        float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz;  //使用变换矩阵把顶点从世界空间变换到光源空间
-                        fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;  //dot 得到距离的平方，.rr 把这个标量复制成 float2 (r, r)作为 uv 去采样
-                    #elif defined (SPOT)   //_LightTexture0：Unity 内置的一维衰减贴图，被包装成 2D 贴图    //UNITY_ATTEN_CHANNEL：宏，一般就是 .r，取出红色通道的值作为衰减
-                        float4 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1));
-                        fixed atten = (lightCoord.z > 0) * tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w * tex2D(_LightTextureB0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;
-                    #else    //(lightCoord.z > 0) 判断是否在聚光灯朝前的半球内（光源正面） //tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w 角度衰减（锥角、边缘羽化）  //最后一段跟点光源一样，距离衰减
-                        fixed atten = 1.0;
-                    #endif
+					fixed atten = 1.0;  //平行光衰减值为 1
+				#else   //其他光源类型，可以使用数学表达式来计算衰减（计算量大），这里使用一张纹理作为查找表，以在片元着色器中得到光源的衰减
+					#if defined (POINT)   //得到光源空间下的坐标，使用该坐标对衰减纹理进行采样得到衰减值
+				        float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz;  //使用变换矩阵把顶点从世界空间变换到光源空间
+				        fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;  //dot 得到距离的平方，.rr 把这个标量复制成 float2 (r, r)作为 uv 去采样
+				    #elif defined (SPOT)   //_LightTexture0：Unity 内置的一维衰减贴图，被包装成 2D 贴图    //UNITY_ATTEN_CHANNEL：宏，一般就是 .r，取出红色通道的值作为衰减
+				        float4 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1));
+				        fixed atten = (lightCoord.z > 0) * tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w * tex2D(_LightTextureB0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;
+				    #else    //(lightCoord.z > 0) 判断是否在聚光灯朝前的半球内（光源正面） //tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w 角度衰减（锥角、边缘羽化）  //最后一段跟点光源一样，距离衰减
+				        fixed atten = 1.0;
+				    #endif
+				#endif
+
+                return fixed4((diffuse + specular) * atten, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        2. 让不透明物体接收阴影
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter9-Shadow"
+{
+    Properties
+    {
+        _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
+        _Specular("Specular", Color) = (1, 1, 1, 1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Tags{"RenderType"="Opaque"}
+
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+
+            #pragma multi_compile_fwdbase 
+
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+            #include "AutoLight.cginc"  //计算阴影时所用的宏都是在这个文件中声明的
+                                   //当关闭了阴影后，SHADOW_COORDS 和 TRANSFER_SHADOW 实际没有作用，而 SHADOW_ATTENUATION 会直接等同于数值 1
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                SHADOW_COORDS(2)  //内置宏 SHADOW_COORDS，声明一个用于对阴影纹理采样的坐标，这个宏的参数需要是下一个可用的插值寄存器的索引值，这里是 2
+            };                                          //声明了一个名为 _ShadowCoord 的阴影纹理坐标变量
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                TRANSFER_SHADOW(o);  //内置宏 TRANSFER_SHADOW，用于在顶点着色器中计算上一步中声明的阴影纹理坐标  
+                //通过判断是否定义了 UNITY_NO_SCREENSPACE_SHADOWS 来得到平台是否支持屏幕空间的阴影映射技术：是则调用内置的 ComputeScreenPos 函数来计算 _ShadowCoord；否则使用传统的阴影映射技术
+                return o;                                                                                //把顶点坐标从模型空间变换到光源空间后存储到 _ShadowCoord 中
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz; 
+                fixed3 worldNormal = normalize(i.worldNormal); 
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));  
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+                fixed atten = 1.0;  
+
+                fixed shadow = SHADOW_ATTENUATION(i);  //内置宏 SHADOW_ATTENUATION，在片元着色器中计算阴影值  //使用 _ShadowCoord 对相关的纹理进行采样，得到阴影信息
+
+                return fixed4(ambient + (diffuse + specular) * atten * shadow, 1.0);
+            }
+            ENDCG
+        }
+        Pass
+        {
+            Tags {"LightMode"="ForwardAdd"}
+
+            Blend One One 
+
+            CGPROGRAM
+
+            #pragma multi_compile_fwdadd
+
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+            #include "AutoLight.cginc"
+
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+            };
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal); 
+               
+                #ifdef USING_DIRECTIONAL_LIGHT  
+                    fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);  
+                #else    
+                    fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz - i.worldPos.xyz);
                 #endif
+
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+                
+                #ifdef USING_DIRECTIONAL_LIGHT
+					fixed atten = 1.0;  
+				#else  
+					#if defined (POINT)  
+				        float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz; 
+				        fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL; 
+				    #elif defined (SPOT) 
+				        float4 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1));
+				        fixed atten = (lightCoord.z > 0) * tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w * tex2D(_LightTextureB0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;
+				    #else 
+				        fixed atten = 1.0;
+				    #endif
+				#endif
+
+                return fixed4((diffuse + specular) * atten, 1.0);
+            }
+            ENDCG
+        }
+    }
+    Fallback "Specular"
+}
+</code></pre>
+                    </div>
+                </div>
+                <div class="collapse-wrap" style="margin-bottom: 20px;">
+                    <h3 class="collapse-title collapsed"
+                        style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
+                        3. 统一管理光照衰减和阴影
+                        <span class="arrow">▼</span>
+                    </h3>
+                    <div class="collapse-body collapsed">
+                        <pre><code>Shader "Unlit/Chapter9-AttenuationAndShadowUseBuildInFunctions"
+{
+    Properties
+    {
+        _Diffuse("Diffuse", Color) = (1, 1, 1, 1)
+        _Specular("Specular", Color) = (1, 1, 1, 1)
+        _Gloss("Gloss", Range(8.0, 256)) = 20
+    }
+    SubShader
+    {
+        Tags{"RenderType"="Opaque"}
+
+        Pass
+        {
+            Tags { "LightMode"="ForwardBase" }
+
+            CGPROGRAM
+
+            #pragma multi_compile_fwdbase 
+
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+            #include "AutoLight.cginc"  //计算阴影时所用的宏都是在这个文件中声明的
+                                   //当关闭了阴影后，SHADOW_COORDS 和 TRANSFER_SHADOW 实际没有作用，而 SHADOW_ATTENUATION 会直接等同于数值 1
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+                SHADOW_COORDS(2)  //内置宏 SHADOW_COORDS，声明一个用于对阴影纹理采样的坐标，这个宏的参数需要是下一个可用的插值寄存器的索引值，这里是 2
+            };                                          //声明了一个名为 _ShadowCoord 的阴影纹理坐标变量
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                TRANSFER_SHADOW(o);  //内置宏 TRANSFER_SHADOW，用于在顶点着色器中计算上一步中声明的阴影纹理坐标  
+                //通过判断是否定义了 UNITY_NO_SCREENSPACE_SHADOWS 来得到平台是否支持屏幕空间的阴影映射技术：是则调用内置的 ComputeScreenPos 函数来计算 _ShadowCoord；否则使用传统的阴影映射技术
+                return o;                                                                                //把顶点坐标从模型空间变换到光源空间后存储到 _ShadowCoord 中
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz; 
+                fixed3 worldNormal = normalize(i.worldNormal); 
+                fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));  
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+
+                UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);  //unity 内置（AutoLight.cginc）的宏，将光照衰减和阴影值相乘后的结果存储到第一个参数中，会帮我们声明 atten 这个变量
+                        //第二个参数是结构体 v2f，会传递给 SHADOW_ATTENUATION，用来计算阴影值。//第三个参数是世界空间的坐标，用于计算光源空间下的坐标，再对光照衰减纹理采样来得到光照衰减
+                return fixed4(ambient + (diffuse + specular) * atten, 1.0);
+            }
+            ENDCG
+        }
+        Pass
+        {
+            Tags {"LightMode"="ForwardAdd"}
+
+            Blend One One 
+
+            CGPROGRAM
+
+            #pragma multi_compile_fwdadd  //用 #pragma_multi_compile_fwdadd_fullshadows 替换，unity 会为 Additional Pass 中的这些额外逐像素光源计算阴影，并传递给 shader
+
+            #pragma vertex vert
+            #pragma fragment frag
+           
+            #include "Lighting.cginc"
+            #include "AutoLight.cginc"
+
+            fixed4 _Diffuse;
+            fixed4 _Specular;
+            float _Gloss;
+
+            struct a2v
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float3 worldNormal : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+            };
+
+
+            v2f vert (a2v v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                fixed3 worldNormal = normalize(i.worldNormal); 
+               
+                #ifdef USING_DIRECTIONAL_LIGHT  
+                    fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);  
+                #else    
+                    fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz - i.worldPos.xyz);
+                #endif
+
+                fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+                fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
+                
+                #ifdef USING_DIRECTIONAL_LIGHT
+					fixed atten = 1.0;  
+				#else  
+					#if defined (POINT)  
+				        float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz; 
+				        fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL; 
+				    #elif defined (SPOT) 
+				        float4 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1));
+				        fixed atten = (lightCoord.z > 0) * tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w * tex2D(_LightTextureB0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;
+				    #else 
+				        fixed atten = 1.0;
+				    #endif
+				#endif
 
                 return fixed4((diffuse + specular) * atten, 1.0);
             }
@@ -1937,7 +2264,7 @@ Shader "Unlit/Chapter9-ForwardRendering"
                 <div class="collapse-wrap" style="margin-bottom: 20px;">
                     <h3 class="collapse-title collapsed"
                         style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
-                        1. 
+                        1.
                         <span class="arrow">▼</span>
                     </h3>
                     <div class="collapse-body collapsed">
@@ -1955,7 +2282,7 @@ Shader "Unlit/Chapter9-ForwardRendering"
                 <div class="collapse-wrap" style="margin-bottom: 20px;">
                     <h3 class="collapse-title collapsed"
                         style="font-size: 16px; border-left: 3px solid #0066cc; padding-left: 10px; color: #555;">
-                        1. 
+                        1.
                         <span class="arrow">▼</span>
                     </h3>
                     <div class="collapse-body collapsed">
@@ -2009,15 +2336,19 @@ Shader "Unlit/Chapter9-ForwardRendering"
             });
         });
 
-        // 点击回到顶部按钮
-        topBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+        // ================== 回到顶部逻辑 ==================
+        if (topBtn) {
+            topBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             });
-        });
+        }
     </script>
 
+    <!-- 👇 引入公共的智能跳转逻辑 👇 -->
+    <script src="smart-link.js"></script>
 </body>
 
 </html>

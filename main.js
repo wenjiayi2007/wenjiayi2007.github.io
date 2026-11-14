@@ -24,7 +24,7 @@ function clearLoadBlur() {
 }
 window.clearLoadBlur = clearLoadBlur;
 
-window.__modelPromise = fetch('./models/wjy3.glb').then(function (res) {
+window.__modelPromise = fetch('./models/wjy.glb').then(function (res) {
     if (!res.ok) throw new Error('模型请求失败');
     return res.arrayBuffer();
 });

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手记</title>
+    <!-- 引入 Bulma 框架 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <!-- 引入你的通用导航栏样式 -->
+    <link rel="stylesheet" href="timeline.css">
+
+    <style>
+        html {
+            background-color: #fafafa;
+            overscroll-behavior: none;
+            /* 防止手机端拖拽出现黑色或白边 */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+        }
+
+        /* 强制取消所有按钮的 Hover 动画和变色 */
+        .back-btn,
+        .top-btn {
+            transition: none !important;
+            transform: none !important;
+        }
+
+        .back-btn:hover,
+        .top-btn:hover {
+            transform: none !important;
+            background: rgba(255, 255, 255, 0.4) !important;
+            color: #333 !important;
+        }
+
+        .back-btn:hover::before,
+        .back-btn:hover::after,
+        .top-btn:hover::before,
+        .top-btn:hover::after {
+            display: none !important;
+        }
+
+        /* ================= 正文排版 ================= */
+        .notes-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px 0px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.7rem;
+            font-weight: 300;
+            margin-bottom: 0px;
+            color: #3f3f3f;
+            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        }
+
+        .note-block {
+            margin-bottom: 4rem;
+            align-items: flex-start;
+        }
+
+        .push-down {
+            margin-top: 20px;
+        }
+
+        .note-img {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .note-date {
+            color: #888;
+            font-size: 0.95rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .note-title {
+            font-size: 2.5rem;
+            font-weight: 100;
+            font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+            color: #3f3f3f !important;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 1rem;
+            line-height: 0.8;
+        }
+
+        .note-title:hover {
+            color: #3f3f3f !important;
+        }
+
+        .note-desc {
+            color: #555;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            font-family: "Kaiti SC", "STKaiti", "KaiTi", serif;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .note-title {
+                font-size: 1.6rem;
+            }
+
+            .push-down {
+                margin-top: 0;
+            }
+        }
+
+        html,
+        body,
+        h1,
+        .page-title,
+        .notes-content {
+            border: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1. 导航栏 -->
+    <div class="sticky-header">
+        <div class="header-left">
+            <!-- 👇 返回主页，修复了 SVG 的位置 👇 -->
+            <a href="javascript:void(0);" onclick="openSmart('index.html');" class="back-btn"
+                style="width: 30px; height: 30px; padding: 0; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14"
+                    fill="currentColor">
+                    <path
+                        d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                </svg>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="burger-menu" id="burgerBtn" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="nav-menu" id="myMenu">
+                <!-- 👇 导航栏里的链接，智能跳转 👇 -->
+                <a href="javascript:void(0);" onclick="openSmart('Unity Shader.html');" class="back-btn">Unity
+                    Shader</a>
+                <a href="javascript:void(0);" onclick="openSmart('GAMES101.html');" class="back-btn">GAMES101</a>
+                <a href="javascript:void(0);" onclick="openSmart('手记.html');" class="back-btn">手记</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 回到顶部按钮 -->
+    <a class="top-btn" id="topBtn" style="width: 30px; height: 30px; padding: 0; justify-content: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14" fill="currentColor"
+            style="transform: rotate(90deg);">
+            <path
+                d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+        </svg>
+    </a>
+
+    <!-- 3. 页面主体 -->
+    <div class="notes-content">
+        <h1 class="page-title">手记</h1>
+
+        <div class="columns note-block">
+            <div class="column is-half">
+                <!-- 👇 图片点击，智能跳转 👇 -->
+                <a href="javascript:void(0);" onclick="openSmart('note2.html');">
+                    <img class="note-img" src="images/note2.jpg" alt="">
+                </a>
+            </div>
+            <div class="column is-half push-down">
+                <div class="note-date"></div>
+                <!-- 👇 标题点击，智能跳转 👇 -->
+                <a href="javascript:void(0);" onclick="openSmart('note2.html');" class="note-title"></a>
+                <div class="note-desc">
+
+                </div>
+            </div>
+        </div>
+
+        <!-- 第一篇手记 -->
+        <div class="columns note-block">
+            <div class="column is-half">
+                <!-- 👇 图片点击，智能跳转 👇 -->
+                <a href="javascript:void(0);" onclick="openSmart('米饭.html');">
+                    <img class="note-img" src="images/米饭.jpg" alt="">
+                </a>
+            </div>
+            <div class="column is-half push-down">
+                <div class="note-date">2026-11-10</div>
+                <!-- 👇 标题点击，智能跳转 👇 -->
+                <a href="javascript:void(0);" onclick="openSmart('米饭.html');" class="note-title">兑水还能再回味三年……</a>
+                <div class="note-desc">
+                    好像是上辈子的记忆，<br>
+                    却又清晰地记得每一个画面：<br>
+                    走之前的匆忙告别，<br>
+                    空调故障的那晚送来的雪糕，<br>
+                    最忙的那几个周末掉落的甜点，<br>
+                    每周刷新一次的鲜花，<br>
+                    ***日等待夜宵的激动，<br>
+                    每一顿米饭前撕标签的仪式感，<br>
+                    晚饭时间“聚众”打游戏的热闹，<br>
+                    第一次玩 switch 的那个中午，<br>
+                    端坐在电视机前感受手柄运镜被**说<br>我打游戏好“虔诚”……<br>
+                    七夕那晚的心碎与哭肿的双眼，<br>
+                    听到承诺时的呆滞与不确信……<br>
+                    我怕时间太慢，<br>
+                    要太久太久才等到我毕业，<br>
+                    我怕时间太快，<br>
+                    来不及准备下一次见面……<br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 脚本 -->
+    <script>
+        // 汉堡菜单逻辑
+        function toggleMenu() {
+            document.getElementById("myMenu").classList.toggle("active");
+            document.getElementById("burgerBtn").classList.toggle("active");
+        }
+
+        // 点击空白处收起菜单
+        document.addEventListener('click', (e) => {
+            var menu = document.getElementById("myMenu");
+            var burger = document.getElementById("burgerBtn");
+            if (menu.classList.contains('active') && !e.target.closest('.header-right')) {
+                menu.classList.remove('active');
+                burger.classList.remove('active');
+            }
+        });
+
+        // 回到顶部逻辑
+        document.getElementById('topBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+    <!-- 👇 引入公共的智能跳转逻辑 👇 -->
+    <script src="smart-link.js"></script>
+</body>
+
+</html>
