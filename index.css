@@ -23,28 +23,19 @@ html,
 body {
     width: 100%;
     height: 100%;
+    height: 100dvh;
+    /* 或者 100vh，你最开始用哪个就用哪个 */
     margin: 0;
     padding: 0;
     overflow: hidden;
-    /* 把背景色直接写在底层防漏 */
-    background-color: var(--bg-bottom);
     background: linear-gradient(to bottom, var(--bg-top) 0%, var(--bg-bottom) 100%);
-    background-attachment: fixed;
-    background-size: cover;
-    cursor: default;
-    overscroll-behavior: none; 
+    background-color: var(--bg-bottom);
+    /* 最关键的：如果你最开始没有写 position: fixed，那现在就删掉它！ */
 }
 
 canvas {
     display: block;
-    /* 👇 关键：强制使用 100dvh 撑满手机物理屏幕的每一毫米 👇 */
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important; 
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1; /* 确保画布在最底层铺开 */
+    /* 让 JS 自己去决定画布多高，不要加 !important 去覆盖它 */
 }
 
 #blur-layer {
