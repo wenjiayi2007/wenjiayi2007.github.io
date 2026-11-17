@@ -1,0 +1,93 @@
+/* ================= 专属博客文章排版样式 ================= */
+
+/* 限制正文最大宽度并居中，适合阅读 */
+.main-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 120px 20px 80px 20px;
+}
+
+/* 大标题居中 */
+.main-content h1 {
+    margin-top: 0px;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 580;
+    color: #3f3f3f;
+    margin-bottom: 0.5rem;
+    line-height: 0.8;
+    font-family: "Kaiti SC", "Noto Serif SC", "Songti SC", "SimSun", serif;
+
+    /* 👇 加上这行，强行去掉那条横线 👇 */
+    border-bottom: none !important;
+}
+
+/* 时间居中 */
+.article-date {
+    text-align: center;
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 3.5rem;
+    font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+}
+
+/* 正文内容 */
+.article-body {
+    color: #444;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    letter-spacing: 1px;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.article-body p {
+    /* 👇 调整段落间距 👇 */
+    margin-bottom: 1.8rem;
+}
+
+.article-body img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 2rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 👇 彻底消灭 timeline.css 带来的折叠面板残留样式 👇 */
+.main-content .collapse-title {
+    display: block !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: none !important;
+    cursor: default !important;
+}
+
+.main-content .collapse-title .arrow {
+    display: none !important;
+    /* 藏掉那个小箭头 */
+}
+
+.main-content .collapse-wrap,
+.main-content .collapse-body {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* 手机端适配 */
+@media screen and (max-width: 768px) {
+    .main-content {
+        padding-top: 90px;
+    }
+
+    .main-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .article-body {
+        font-size: 1.05rem;
+        line-height: 1.8;
+    }
+}

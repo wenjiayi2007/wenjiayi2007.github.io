@@ -11,6 +11,33 @@
     <link rel="stylesheet" href="timeline.css">
 
     <style>
+        /* 强制左右分栏 */
+        .note-block {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 4rem;
+        }
+
+        .note-block>.column {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            padding: 0.75rem;
+        }
+
+        /* 手机端恢复上下堆叠 */
+        @media screen and (max-width: 768px) {
+            .note-block {
+                flex-wrap: wrap !important;
+            }
+
+            .note-block>.column {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
         html {
             background-color: #fafafa;
             overscroll-behavior: none;
@@ -57,6 +84,7 @@
             font-weight: 200;
             margin-bottom: 0px;
             color: #3f3f3f;
+            letter-spacing: 5px;
             font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         }
 
@@ -85,12 +113,14 @@
         .note-title {
             font-size: 2.5rem;
             font-weight: 580;
+            letter-spacing: 1.5px;
             font-family: "Kaiti SC", "Noto Serif SC", "Songti SC", "SimSun", serif;
             color: #3f3f3f !important;
             text-decoration: none;
             display: block;
             margin-bottom: 1rem;
             line-height: 0.8;
+            width: fit-content;
         }
 
         .note-title:hover {
@@ -102,6 +132,7 @@
             font-size: 1.2rem;
             line-height: 1.6;
             font-weight: 400;
+            letter-spacing: 1px;
             font-family: "Kaiti SC", "Noto Serif SC", "Songti SC", "SimSun", serif;
         }
 
@@ -169,15 +200,15 @@
         <!-- 👇 这里插入新的手记 👇 -->
         <div class="columns note-block">
             <div class="column is-half">
-                <!-- 👇 图片点击，智能跳转 👇 -->
-                <a href="javascript:void(0);" onclick="openSmart('米饭.html');">
+                <!-- 👇 跳转 👇 -->
+                <a href="米饭.html">
                     <img class="note-img" src="images/米饭.jpg" alt="">
                 </a>
             </div>
             <div class="column is-half push-down">
                 <div class="note-date">2026-11-10</div>
-                <!-- 👇 标题点击，智能跳转 👇 -->
-                <a href="javascript:void(0);" onclick="openSmart('米饭.html');" class="note-title">兑水还能再回味三年……</a>
+                <!-- 👇 跳转 👇 -->
+                <a href="blog1.html" class="note-title">兑水还能回味三年……</a>
                 <div class="note-desc">
                     好像是上辈子的记忆，<br>
                     却又清晰地记得每一个画面：<br>
@@ -193,9 +224,9 @@
                     七夕那晚的心碎与哭肿的双眼，<br>
                     听到承诺时的呆滞与不确信……<br>
                     我怕时间太慢，<br>
-                    要太久太久才等到我毕业，<br>
+                    要太久太久才毕业，<br>
                     我怕时间太快，<br>
-                    来不及准备下一次见面……<br>
+                    来不及好好准备下一次见面……<br>
                 </div>
             </div>
         </div>

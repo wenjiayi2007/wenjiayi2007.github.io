@@ -96,7 +96,7 @@ canvas {
 /* 底部社交按钮 */
 .footer-group {
     position: absolute;
-    top: 590px;
+    bottom: 4vw;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -163,7 +163,7 @@ canvas {
 #enter-overview-btn {
     white-space: nowrap;
     position: fixed;
-    right: 45px;
+    right: 4vw;
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
